@@ -2,6 +2,7 @@ import { useIsDesktop } from './hooks/useIsDesktop'
 import { DesktopHero } from './components/DesktopHero'
 import { DesktopNavbar } from './components/DesktopNavbar'
 import { MobileHero } from './components/MobileHero'
+import { SpecialtiesMenu } from './components/SpecialtiesMenu'
 
 export default function App() {
   const isDesktop = useIsDesktop()
@@ -11,9 +12,15 @@ export default function App() {
       <>
         <DesktopNavbar />
         <DesktopHero />
+        <SpecialtiesMenu />
       </>
     )
   }
 
-  return <MobileHero />
+  return (
+    <>
+      <MobileHero />
+      <SpecialtiesMenu />
+    </>
+  )
 }
