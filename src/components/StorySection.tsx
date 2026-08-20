@@ -49,26 +49,17 @@ export function StorySection() {
       const viewH = window.innerHeight
       const sectionH = rect.height
 
-      // When sticky is pinned: sectionTop is 0 or negative.
-      // Sticky phase: sectionTop ∈ [0, -(sectionH - viewH)]
-      // progress 0 = just entered viewport top, progress 1 = about to leave
-      const stickyRange = sectionH - viewH
-      if (stickyRange <= 0) {
-        setScrollProgress(0)
-        setActiveNode(-1)
-        return
-      }
-
-      // rect.top goes from ~viewH (section entering) to -(sectionH) (section leaving)
-      // Sticky pin starts when rect.top = 0, ends when rect.top = -(sectionH - viewH)
-      const pinned = -rect.top / stickyRange
-      const clamped = Math.max(0, Math.min(1, pinned))
+      // Progress 0 = section top at viewport bottom (just entering)
+      // Progress 1 = section bottom at viewport top (fully scrolled past)
+      const total = sectionH + viewH
+      const raw = 1 - (rect.bottom / total)
+      const clamped = Math.max(0, Math.min(1, raw))
       setScrollProgress(clamped)
 
-      // Activate nodes progressively through the sticky phase
-      if (clamped >= 0.65) setActiveNode(2)
-      else if (clamped >= 0.3) setActiveNode(1)
-      else if (clamped >= 0.05) setActiveNode(0)
+      // Nodes activate as the user scrolls through
+      if (clamped >= 0.55) setActiveNode(2)
+      else if (clamped >= 0.28) setActiveNode(1)
+      else if (clamped >= 0.08) setActiveNode(0)
       else setActiveNode(-1)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
