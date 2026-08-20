@@ -73,7 +73,7 @@ export function StorySection() {
         className="absolute inset-0 pointer-events-none transition-opacity duration-1000"
         style={{
           opacity: isVisible ? 1 : 0,
-          background: `radial-gradient(1000px 800px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(255,214,137,0.04), transparent 60%)`,
+          background: `radial-gradient(1000px 800px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(229,57,53,0.04), transparent 60%)`,
         }}
       />
 
@@ -92,8 +92,8 @@ export function StorySection() {
       <div
         className="absolute bottom-20 right-[8%] w-16 h-24 rounded-xl pointer-events-none story-glass-shard-reverse"
         style={{
-          background: 'linear-gradient(225deg, rgba(255,214,137,0.04), rgba(255,214,137,0.005))',
-          border: '1px solid rgba(255,214,137,0.05)',
+          background: 'linear-gradient(225deg, rgba(229,57,53,0.04), rgba(229,57,53,0.005))',
+          border: '1px solid rgba(229,57,53,0.05)',
           backdropFilter: 'blur(2px)',
           animationDelay: '1.5s',
           opacity: isVisible ? 1 : 0,
@@ -103,14 +103,14 @@ export function StorySection() {
       <div
         className="absolute top-[35%] right-[4%] w-10 h-10 rounded-full pointer-events-none story-pulse"
         style={{
-          background: 'radial-gradient(circle, rgba(255,214,137,0.12), transparent 70%)',
+          background: 'radial-gradient(circle, rgba(229,57,53,0.12), transparent 70%)',
           animationDelay: '2s',
         }}
       />
       <div
         className="absolute bottom-[30%] left-[12%] w-3 h-3 rounded-full pointer-events-none story-float"
         style={{
-          background: 'rgba(255,214,137,0.15)',
+          background: 'rgba(229,57,53,0.15)',
           animationDelay: '0.5s',
         }}
       />
@@ -129,14 +129,14 @@ export function StorySection() {
         >
           <span
             className="text-sm font-semibold uppercase tracking-[0.3em]"
-            style={{ color: '#ffd689' }}
+            style={{ color: '#e53935' }}
           >
             Nuestra Historia
           </span>
           <div
             className="mt-3 h-[2px] w-16 rounded-full"
             style={{
-              background: 'linear-gradient(90deg, #ffd689, rgba(255,214,137,0.2))',
+              background: 'linear-gradient(90deg, #e53935, rgba(229,57,53,0.2))',
             }}
           />
         </div>
@@ -180,7 +180,7 @@ export function StorySection() {
                 className="absolute inset-0"
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(255,214,137,0.08) 0%, rgba(0,0,0,0.3) 50%, rgba(10,10,10,0.8) 100%)',
+                    'linear-gradient(135deg, rgba(229,57,53,0.08) 0%, rgba(0,0,0,0.3) 50%, rgba(10,10,10,0.8) 100%)',
                 }}
               />
 
@@ -227,7 +227,7 @@ export function StorySection() {
                 className="absolute left-0 top-10 bottom-10 w-[2px] rounded-full transition-all duration-1000 hidden lg:block"
                 style={{
                   background:
-                    'linear-gradient(to bottom, #ffd689, rgba(255,214,137,0.15), transparent)',
+                    'linear-gradient(to bottom, #e53935, rgba(229,57,53,0.15), transparent)',
                   transformOrigin: 'top',
                   transform: isVisible ? 'scaleY(1)' : 'scaleY(0)',
                 }}
@@ -265,7 +265,7 @@ export function StorySection() {
                           lineHeight: 1.65,
                           transitionDelay: `${0.2 + i * 0.08}s`,
                           color:
-                            line.style === 'accent' ? '#ffd689' : undefined,
+                            line.style === 'accent' ? '#e53935' : undefined,
                         }}
                       >
                         {line.text}
@@ -282,7 +282,7 @@ export function StorySection() {
                 }`}
                 style={{
                   background:
-                    'linear-gradient(90deg, rgba(255,214,137,0.5), rgba(255,214,137,0.08), transparent)',
+                    'linear-gradient(90deg, rgba(229,57,53,0.5), rgba(229,57,53,0.08), transparent)',
                   transitionDelay: '0.9s',
                   transformOrigin: 'left',
                 }}
@@ -307,16 +307,16 @@ export function StorySection() {
                     className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
                     style={{
                       background:
-                        'linear-gradient(135deg, rgba(255,214,137,0.15), rgba(255,214,137,0.05))',
-                      border: '2px solid rgba(255,214,137,0.25)',
-                      boxShadow: '0 0 20px rgba(255,214,137,0.08)',
+                        'linear-gradient(135deg, rgba(229,57,53,0.15), rgba(229,57,53,0.05))',
+                      border: '2px solid rgba(229,57,53,0.25)',
+                      boxShadow: '0 0 20px rgba(229,57,53,0.08)',
                     }}
                   >
                     <span
                       className="text-lg font-bold"
                       style={{
                         fontFamily: 'var(--font-display)',
-                        color: '#ffd689',
+                        color: '#e53935',
                       }}
                     >
                       DB
@@ -350,7 +350,7 @@ export function StorySection() {
                       className="text-xl font-bold"
                       style={{
                         fontFamily: 'var(--font-display)',
-                        color: '#ffd689',
+                        color: '#e53935',
                       }}
                     >
                       {stat.num}
@@ -371,12 +371,12 @@ export function StorySection() {
               >
                 <div
                   className="w-8 h-[2px] rounded-full"
-                  style={{ background: 'rgba(255,214,137,0.3)' }}
+                  style={{ background: 'rgba(229,57,53,0.3)' }}
                 />
                 <span
                   className="text-xs italic"
                   style={{
-                    color: 'rgba(255,214,137,0.4)',
+                    color: 'rgba(229,57,53,0.4)',
                     fontFamily: 'var(--font-sans)',
                   }}
                 >
