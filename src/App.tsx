@@ -4,6 +4,7 @@ import { DesktopNavbar } from './components/DesktopNavbar'
 import { MobileHero } from './components/MobileHero'
 import { SpecialtiesMenu } from './components/SpecialtiesMenu'
 import { StorySection } from './components/StorySection'
+import { TestimonialsSection } from './components/TestimonialsSection'
 
 export default function App() {
   const isDesktop = useIsDesktop()
@@ -15,6 +16,7 @@ export default function App() {
         <DesktopHero />
         <SpecialtiesMenu />
         <StorySection />
+        <TestimonialsSection />
       </>
     )
   }
@@ -24,6 +26,7 @@ export default function App() {
       <MobileHero />
       <SpecialtiesMenu />
       <StorySection />
+      <TestimonialsSection />
     </>
   )
 }
