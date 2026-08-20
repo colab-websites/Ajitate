@@ -3,427 +3,323 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 const STORY_IMAGE =
   'https://res.cloudinary.com/dklycgquj/image/upload/v1787201076/historia_u5skcx.jpg'
 
-const TIMELINE = [
-  {
-    year: '2019',
-    title: 'El Sueño',
-    body: 'Daniel Bojorque soñaba con un lugar donde la familia se reuniera alrededor de una buena mesa.',
-  },
-  {
-    year: '2020',
-    title: 'La Cocina',
-    body: 'Las primeras hamburguesas Tex-Mex nacieron en una cocina pequeña, pero con un sabor enorme.',
-  },
-  {
-    year: 'Hoy',
-    title: 'La Familia',
-    body: 'Ajitate es hoy el punto de encuentro de Cuenca: risas, familia y el mejor sabor tex-mex.',
-  },
+const STORY_PIECES = [
+  { type: 'label' as const, delay: 0 },
+  { type: 'headline' as const, delay: 150 },
+  { type: 'divider' as const, delay: 400 },
+  { type: 'body' as const, delay: 500, text: 'Todo empezó con un hambre diferente. Daniel Bojorque soñaba con un lugar donde la familia se reuniera alrededor de una buena mesa.' },
+  { type: 'quote' as const, delay: 700, text: '"La mesa une a todos"' },
+  { type: 'founder' as const, delay: 900 },
+  { type: 'stats' as const, delay: 1100 },
 ]
 
 export function StorySection() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const imageContainerRef = useRef<HTMLDivElement>(null)
-  const [scrollProgress, setScrollProgress] = useState(0)
+  const [revealed, setRevealed] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
-  const [imageVisible, setImageVisible] = useState(false)
-  const [activeNode, setActiveNode] = useState(-1)
 
   useEffect(() => {
     const el = sectionRef.current
     if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setImageVisible(true)
-      },
-      { threshold: 0.05 }
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setRevealed(true); obs.disconnect() } },
+      { threshold: 0.15 }
     )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return
-      const rect = sectionRef.current.getBoundingClientRect()
-      const viewH = window.innerHeight
-      const sectionH = rect.height
-
-      // Progress 0 = section top at viewport bottom (just entering)
-      // Progress 1 = section bottom at viewport top (fully scrolled past)
-      const total = sectionH + viewH
-      const raw = 1 - (rect.bottom / total)
-      const clamped = Math.max(0, Math.min(1, raw))
-      setScrollProgress(clamped)
-
-      // Nodes activate as the user scrolls through
-      if (clamped >= 0.55) setActiveNode(2)
-      else if (clamped >= 0.28) setActiveNode(1)
-      else if (clamped >= 0.08) setActiveNode(0)
-      else setActiveNode(-1)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
+    obs.observe(el)
+    return () => obs.disconnect()
   }, [])
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    setMousePos({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    })
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    setMousePos({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height })
   }, [])
-
-  const parallaxY = (scrollProgress - 0.5) * 60
-  const imageScale = 1.2 + scrollProgress * 0.05
-  const diagonalShift = scrollProgress * 8
 
   return (
     <section
       ref={sectionRef}
       onMouseMove={onMouseMove}
       className="relative overflow-hidden"
-      style={{ background: '#0a0a0a', minHeight: '200vh' }}
+      style={{ background: '#0a0a0a' }}
     >
-      {/* ── FILM GRAIN OVERLAY ── */}
+      {/* ═══ AMBIENT GLOW ═══ */}
       <div
-        className="pointer-events-none absolute inset-0 z-50 opacity-[0.04]"
+        className="absolute inset-0 pointer-events-none transition-opacity duration-[2000ms]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E")`,
+          opacity: revealed ? 1 : 0,
+          background: `radial-gradient(900px 700px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(229,57,53,0.05), transparent 65%)`,
         }}
       />
 
-      {/* ── FLOATING PARTICLES ── */}
-      {[...Array(12)].map((_, i) => (
+      {/* ═══ FLOATING SHARDS ═══ */}
+      {[
+        { top: '8%', left: '5%', w: 100, h: 160, rotate: 12, delay: '0.6s' },
+        { top: '15%', right: '4%', w: 60, h: 90, rotate: -8, delay: '1.2s' },
+        { bottom: '12%', left: '8%', w: 40, h: 60, rotate: 20, delay: '1.8s' },
+        { bottom: '20%', right: '7%', w: 80, h: 50, rotate: -15, delay: '0.9s' },
+      ].map((s, i) => (
         <div
           key={i}
-          className="pointer-events-none absolute rounded-full story-particle"
+          className="absolute pointer-events-none story-glass-shard"
           style={{
-            width: i % 3 === 0 ? 3 : 2,
-            height: i % 3 === 0 ? 3 : 2,
-            background: i % 4 === 0 ? 'rgba(229,57,53,0.25)' : 'rgba(255,255,255,0.08)',
-            left: `${8 + (i * 7.5) % 85}%`,
-            top: `${12 + (i * 13) % 75}%`,
-            animationDuration: `${5 + (i % 4) * 2}s`,
-            animationDelay: `${i * 0.7}s`,
+            top: s.top, bottom: s.bottom, left: s.left, right: s.right,
+            width: s.w, height: s.h,
+            borderRadius: 16,
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.025), rgba(255,255,255,0.003))',
+            border: '1px solid rgba(255,255,255,0.035)',
+            backdropFilter: 'blur(2px)',
+            transform: `rotate(${s.rotate}deg)`,
+            animationDelay: s.delay,
+            opacity: revealed ? 1 : 0,
+            transition: `opacity 1.5s ease ${s.delay}`,
           }}
         />
       ))}
 
-      {/* ── STICKY CONTAINER ── */}
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* ── FULL-BLEED IMAGE ── */}
-        <div
-          ref={imageContainerRef}
-          className="absolute inset-0"
-          style={{ clipPath: `polygon(${diagonalShift}% 0, 100% 0, 100% 100%, ${diagonalShift - 5}% 100%)` }}
-        >
-          {/* Base image */}
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url(${STORY_IMAGE})`,
-              backgroundSize: 'cover',
-              backgroundPosition: '30% center',
-              transform: `translateY(${parallaxY}px) scale(${imageScale})`,
-              transition: 'transform 0.15s ease-out',
-              filter: imageVisible ? 'none' : 'scale(1.3) blur(8px)',
-              opacity: imageVisible ? 1 : 0,
-              transitionProperty: 'transform, filter, opacity',
-              transitionDuration: '1.2s, 1.5s, 1s',
-              transitionTimingFunction: 'ease-out',
-            }}
-          />
+      {/* ═══ MAIN CONTENT ═══ */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 py-24 lg:py-32">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-0 items-start">
 
-          {/* Diagonal color wash */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(${135 + diagonalShift}deg, rgba(229,57,53,0.12) 0%, transparent 40%, rgba(0,0,0,0.6) 100%)`,
-            }}
-          />
-
-          {/* Mouse-following light beam */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: `radial-gradient(600px 500px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(229,57,53,0.06), transparent 60%)`,
-              transition: 'background 0.3s ease',
-            }}
-          />
-
-          {/* Vignette */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(ellipse at 40% 50%, transparent 20%, rgba(10,10,10,0.6) 80%)',
-            }}
-          />
-
-          {/* Left edge dissolve */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.4) 15%, transparent 40%)',
-            }}
-          />
-
-          {/* Right edge dissolve */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(270deg, rgba(10,10,10,1) 0%, rgba(10,10,10,0.85) 30%, transparent 60%)',
-            }}
-          />
-
-          {/* Bottom dissolve */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(0deg, #0a0a0a 0%, rgba(10,10,10,0.6) 20%, transparent 50%)',
-            }}
-          />
-        </div>
-
-        {/* ── DIAGONAL EDGE LINE ── */}
-        <div
-          className="absolute top-0 bottom-0 w-[2px] pointer-events-none z-10"
-          style={{
-            left: `calc(${diagonalShift}% + 20px)`,
-            background: 'linear-gradient(to bottom, transparent 5%, rgba(229,57,53,0.4) 30%, rgba(229,57,53,0.15) 70%, transparent 95%)',
-            transform: 'skewX(-4deg)',
-            opacity: imageVisible ? 1 : 0,
-            transition: 'opacity 1.5s ease 0.5s',
-          }}
-        />
-
-        {/* ── VERTICAL TIMELINE (left) ── */}
-        <div className="absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-0">
-          {/* Timeline line */}
-          <div
-            className="absolute top-0 bottom-0 w-[1px]"
-            style={{
-              background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.12), transparent)',
-            }}
-          />
-          {/* Progress line */}
-          <div
-            className="absolute top-0 w-[1px] transition-all duration-500"
-            style={{
-              height: `${scrollProgress * 100}%`,
-              background: 'linear-gradient(to bottom, rgba(229,57,53,0.6), rgba(229,57,53,0.2))',
-            }}
-          />
-
-          {TIMELINE.map((_, i) => {
-            const isActive = activeNode >= i
-            return (
+          {/* ── LEFT: Image column ── */}
+          <div className="w-full lg:w-[42%] relative">
+            {/* Diagonal clip reveal */}
+            <div
+              className="relative rounded-[24px] overflow-hidden"
+              style={{
+                aspectRatio: '3/4',
+                clipPath: revealed
+                  ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+                  : 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+                transition: 'clip-path 1.4s cubic-bezier(0.77, 0, 0.175, 1) 0.2s',
+              }}
+            >
+              {/* Image */}
               <div
-                key={i}
-                className="relative flex items-center justify-center"
-                style={{ height: 100 }}
-              >
-                <div
-                  className="relative z-10 rounded-full transition-all duration-500"
-                  style={{
-                    width: isActive ? 14 : 8,
-                    height: isActive ? 14 : 8,
-                    background: isActive ? '#e53935' : 'rgba(255,255,255,0.15)',
-                    boxShadow: isActive
-                      ? '0 0 16px rgba(229,57,53,0.5), 0 0 32px rgba(229,57,53,0.2)'
-                      : 'none',
-                    border: isActive ? '2px solid rgba(229,57,53,0.3)' : '2px solid rgba(255,255,255,0.08)',
-                  }}
-                />
-                {/* Year label */}
-                <span
-                  className="absolute left-8 whitespace-nowrap text-xs font-semibold uppercase tracking-widest transition-all duration-500"
-                  style={{
-                    color: isActive ? '#e53935' : 'rgba(255,255,255,0.2)',
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.15em',
-                  }}
-                >
-                  {TIMELINE[i].year}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* ── CONTENT OVERLAY ── */}
-        <div className="absolute inset-0 z-10 flex items-center">
-          <div className="w-full max-w-7xl mx-auto px-6 lg:px-20 flex flex-col lg:flex-row items-center lg:items-end justify-between gap-12 lg:gap-8">
-
-            {/* ── LEFT: Big title ── */}
-            <div className="flex-1 max-w-xl">
-              {/* Section label */}
-              <div
-                className={`mb-6 transition-all duration-700 ${imageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-              >
-                <span
-                  className="text-xs font-semibold uppercase tracking-[0.35em]"
-                  style={{ color: '#e53935' }}
-                >
-                  Nuestra Historia
-                </span>
-              </div>
-
-              {/* Giant headline */}
-              <h2
-                className={`transition-all duration-1000 ${imageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+                className="absolute inset-0"
                 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(3rem, 8vw, 7rem)',
-                  lineHeight: 0.9,
-                  color: 'white',
-                  letterSpacing: '-0.02em',
-                  transitionDelay: '0.2s',
+                  backgroundImage: `url(${STORY_IMAGE})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: '25% 30%',
+                  transform: revealed ? 'scale(1)' : 'scale(1.15)',
+                  transition: 'transform 2s cubic-bezier(0.23, 1, 0.32, 1) 0.3s',
+                }}
+              />
+
+              {/* Color wash */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(229,57,53,0.15) 0%, transparent 40%, rgba(10,10,10,0.5) 100%)',
+                }}
+              />
+
+              {/* Vignette */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: 'radial-gradient(ellipse at 30% 35%, transparent 15%, rgba(10,10,10,0.55) 85%)',
+                }}
+              />
+
+              {/* Mouse light */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: `radial-gradient(400px 350px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(229,57,53,0.08), transparent 60%)`,
+                }}
+              />
+            </div>
+
+            {/* Floating year tag */}
+            <div
+              className="absolute -bottom-5 -right-3 lg:right-[-30px] z-20"
+              style={{
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateY(0) rotate(0deg)' : 'translateY(20px) rotate(3deg)',
+                transition: 'all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 1s',
+              }}
+            >
+              <div
+                className="px-5 py-3 rounded-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #e53935, #c62828)',
+                  boxShadow: '0 8px 32px rgba(229,57,53,0.35), 0 2px 8px rgba(0,0,0,0.3)',
                 }}
               >
-                <span className="block">UN SABOR</span>
-                <span className="block" style={{ color: '#e53935' }}>QUE NACE</span>
-                <span className="block text-white/40" style={{ fontSize: '0.55em', letterSpacing: '0.08em' }}>
-                  DE LA FAMILIA
-                </span>
-              </h2>
-
-              {/* Decorative line */}
-              <div
-                className={`mt-8 transition-all duration-1000 ${imageVisible ? 'opacity-100' : 'opacity-0'}`}
-                style={{ transitionDelay: '0.6s' }}
-              >
-                <div
-                  className="h-[1px] w-24"
-                  style={{
-                    background: 'linear-gradient(90deg, #e53935, transparent)',
-                    transformOrigin: 'left',
-                    transform: imageVisible ? 'scaleX(1)' : 'scaleX(0)',
-                    transition: 'transform 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.8s',
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* ── RIGHT: Glass panels ── */}
-            <div className="flex-1 max-w-lg flex flex-col gap-4">
-              {TIMELINE.map((item, i) => {
-                const isVisible = activeNode >= i
-                const isCurrent = activeNode === i
-                return (
-                  <div
-                    key={i}
-                    className="relative rounded-2xl overflow-hidden transition-all duration-700"
-                    style={{
-                      opacity: isVisible ? 1 : 0,
-                      transform: isVisible
-                        ? 'translateX(0) scale(1)'
-                        : 'translateX(40px) scale(0.95)',
-                      transitionDelay: `${i * 0.15}s`,
-                      background: isCurrent
-                        ? 'linear-gradient(135deg, rgba(229,57,53,0.08), rgba(229,57,53,0.02))'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008))',
-                      border: isCurrent
-                        ? '1px solid rgba(229,57,53,0.15)'
-                        : '1px solid rgba(255,255,255,0.04)',
-                      backdropFilter: 'blur(16px)',
-                      padding: '1.5rem',
-                    }}
-                  >
-                    {/* Year badge */}
-                    <div className="flex items-center gap-3 mb-2">
-                      <span
-                        className="text-xs font-bold uppercase tracking-widest"
-                        style={{
-                          fontFamily: 'var(--font-display)',
-                          color: isCurrent ? '#e53935' : 'rgba(255,255,255,0.3)',
-                          fontSize: '0.75rem',
-                        }}
-                      >
-                        {item.year}
-                      </span>
-                      <div
-                        className="flex-1 h-[1px]"
-                        style={{
-                          background: isCurrent
-                            ? 'linear-gradient(90deg, rgba(229,57,53,0.3), transparent)'
-                            : 'linear-gradient(90deg, rgba(255,255,255,0.06), transparent)',
-                        }}
-                      />
-                    </div>
-
-                    {/* Title */}
-                    <h3
-                      className="text-white font-semibold mb-1"
-                      style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: 'clamp(1rem, 1.5vw, 1.15rem)',
-                      }}
-                    >
-                      {item.title}
-                    </h3>
-
-                    {/* Body */}
-                    <p
-                      className="leading-relaxed"
-                      style={{
-                        color: isCurrent ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)',
-                        fontSize: 'clamp(0.8rem, 1.2vw, 0.9rem)',
-                        transition: 'color 0.5s ease',
-                      }}
-                    >
-                      {item.body}
-                    </p>
-                  </div>
-                )
-              })}
-
-              {/* Founder badge */}
-              <div
-                className={`flex items-center gap-4 mt-2 transition-all duration-700 ${activeNode >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                style={{ transitionDelay: '0.3s' }}
-              >
-                <div
-                  className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(229,57,53,0.12), rgba(229,57,53,0.04))',
-                    border: '1.5px solid rgba(229,57,53,0.2)',
-                  }}
+                <span
+                  className="text-white text-2xl font-bold block leading-none"
+                  style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  <span
-                    className="text-sm font-bold"
-                    style={{ fontFamily: 'var(--font-display)', color: '#e53935' }}
-                  >
-                    DB
-                  </span>
-                </div>
-                <div>
-                  <p className="text-white text-sm font-semibold">Daniel Bojorque</p>
-                  <p className="text-white/30 text-xs">Fundador de Ajitate</p>
-                </div>
+                  2019
+                </span>
+                <span className="text-white/70 text-[9px] uppercase tracking-widest">
+                  Fundado
+                </span>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* ── BOTTOM SCROLL HINT ── */}
-        <div
-          className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 transition-all duration-700 ${scrollProgress > 0.1 ? 'opacity-0' : 'opacity-100'}`}
-        >
-          <span className="text-white/20 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-          <div className="w-[1px] h-8 bg-white/10 relative overflow-hidden">
+            {/* Red accent dot */}
             <div
-              className="absolute top-0 left-0 w-full bg-white/40"
+              className="absolute -top-3 -left-3 w-4 h-4 rounded-full z-20 story-pulse"
               style={{
-                animation: 'scroll-hint-line 2s ease-in-out infinite',
+                background: '#e53935',
+                boxShadow: '0 0 20px rgba(229,57,53,0.4)',
+                opacity: revealed ? 1 : 0,
+                transition: 'opacity 1s ease 1.2s',
               }}
             />
+          </div>
+
+          {/* ── RIGHT: Content column ── */}
+          <div className="w-full lg:w-[58%] lg:pl-16 flex flex-col justify-center">
+
+            {/* Label */}
+            <div
+              className="mb-4"
+              style={{
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateX(0)' : 'translateX(-30px)',
+                transition: 'all 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.3s',
+              }}
+            >
+              <span
+                className="text-xs font-semibold uppercase tracking-[0.35em]"
+                style={{ color: '#e53935' }}
+              >
+                Nuestra Historia
+              </span>
+            </div>
+
+            {/* Giant headline */}
+            <h2
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)',
+                lineHeight: 0.92,
+                color: 'white',
+                letterSpacing: '-0.01em',
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateY(0)' : 'translateY(40px)',
+                transition: 'all 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.45s',
+              }}
+            >
+              <span className="block">EL SABOR</span>
+              <span className="block" style={{ color: '#e53935' }}>QUE NACE</span>
+              <span
+                className="block"
+                style={{
+                  fontSize: '0.42em',
+                  color: 'rgba(255,255,255,0.3)',
+                  letterSpacing: '0.12em',
+                  marginTop: 8,
+                }}
+              >
+                DE LA FAMILIA
+              </span>
+            </h2>
+
+            {/* Divider */}
+            <div
+              className="my-8 h-[1px] w-full max-w-[280px]"
+              style={{
+                background: 'linear-gradient(90deg, #e53935, rgba(229,57,53,0.1), transparent)',
+                transformOrigin: 'left',
+                transform: revealed ? 'scaleX(1)' : 'scaleX(0)',
+                transition: 'transform 1s cubic-bezier(0.23, 1, 0.32, 1) 0.7s',
+              }}
+            />
+
+            {/* Body text */}
+            <p
+              className="max-w-md leading-[1.75]"
+              style={{
+                color: 'rgba(255,255,255,0.55)',
+                fontSize: 'clamp(0.9rem, 1.3vw, 1.05rem)',
+                fontFamily: 'var(--font-sans)',
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.85s',
+              }}
+            >
+              Todo empezó con un hambre diferente. Daniel Bojorque soñaba con un lugar
+              donde la familia se reuniera alrededor de una buena mesa. Así nació Ajitate:
+              tex-mex con alma en Cuenca.
+            </p>
+
+            {/* Quote */}
+            <div
+              className="mt-8 flex items-center gap-4"
+              style={{
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateX(0)' : 'translateX(-20px)',
+                transition: 'all 0.7s cubic-bezier(0.23, 1, 0.32, 1) 1.1s',
+              }}
+            >
+              <div className="w-10 h-[2px] rounded-full" style={{ background: 'rgba(229,57,53,0.4)' }} />
+              <span
+                className="italic text-sm"
+                style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'var(--font-sans)' }}
+              >
+                "La mesa une a todos"
+              </span>
+            </div>
+
+            {/* Founder badge */}
+            <div
+              className="mt-8 flex items-center gap-4"
+              style={{
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateY(0)' : 'translateY(16px)',
+                transition: 'all 0.7s cubic-bezier(0.23, 1, 0.32, 1) 1.3s',
+              }}
+            >
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(229,57,53,0.15), rgba(229,57,53,0.04))',
+                  border: '1.5px solid rgba(229,57,53,0.25)',
+                  boxShadow: '0 0 24px rgba(229,57,53,0.1)',
+                }}
+              >
+                <span
+                  className="text-sm font-bold"
+                  style={{ fontFamily: 'var(--font-display)', color: '#e53935' }}
+                >
+                  DB
+                </span>
+              </div>
+              <div>
+                <p className="text-white text-sm font-semibold">Daniel Bojorque</p>
+                <p className="text-white/30 text-xs">Fundador de Ajitate</p>
+              </div>
+            </div>
+
+            {/* Stats row */}
+            <div
+              className="mt-10 flex gap-10"
+              style={{
+                opacity: revealed ? 1 : 0,
+                transform: revealed ? 'translateY(0)' : 'translateY(16px)',
+                transition: 'all 0.7s cubic-bezier(0.23, 1, 0.32, 1) 1.5s',
+              }}
+            >
+              {[
+                { num: '5K+', label: 'Clientes felices' },
+                { num: '100%', label: 'Tex-Mex real' },
+                { num: 'Cuenca', label: 'Ecuador' },
+              ].map((s) => (
+                <div key={s.label}>
+                  <p
+                    className="text-xl font-bold"
+                    style={{ fontFamily: 'var(--font-display)', color: '#e53935' }}
+                  >
+                    {s.num}
+                  </p>
+                  <p className="text-white/25 text-[10px] uppercase tracking-wider mt-1">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
