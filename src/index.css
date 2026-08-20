@@ -312,3 +312,22 @@ body {
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* Glass shard floating */
+@keyframes story-glass-shard {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(-30px) rotate(6deg) scale(1.04); }
+}
+
+@keyframes story-glass-shard-reverse {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(22px) rotate(-4deg) scale(0.97); }
+}
+
+.story-glass-shard {
+  animation: story-glass-shard 8s ease-in-out infinite;
+}
+
+.story-glass-shard-reverse {
+  animation: story-glass-shard-reverse 9s ease-in-out infinite;
+}
