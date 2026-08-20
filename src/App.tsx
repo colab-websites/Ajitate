@@ -12,7 +12,6 @@ export default function App() {
       <>
         <DesktopNavbar />
         <DesktopHero />
-        <div style={{ height: '100vh' }} />
         <SpecialtiesMenu />
       </>
     )

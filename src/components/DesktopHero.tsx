@@ -238,7 +238,7 @@ export function DesktopHero() {
   }
 
   return (
-    <div ref={containerRef} className="fixed inset-0 overflow-hidden" style={{ background: '#000' }}>
+    <div ref={containerRef} className="relative w-full h-screen overflow-hidden" style={{ background: '#000' }}>
       <div
         ref={scopeRef}
         style={{
