@@ -215,3 +215,35 @@ body {
   opacity: 1;
   transform: scale(1);
 }
+
+/* Asymmetric grid layout */
+.spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 380px 380px;
+  gap: 20px;
+}
+
+.spec-card.tall {
+  grid-row: 1 / 3;
+}
+
+@media (max-width: 768px) {
+  .spec-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 340px);
+  }
+  .spec-card.tall {
+    grid-row: auto;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .spec-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 340px);
+  }
+  .spec-card.tall {
+    grid-row: auto;
+  }
+}
