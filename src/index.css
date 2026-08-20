@@ -257,77 +257,34 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   STORY SECTION — 3D effects & floating
+   STORY SECTION — Cinematic parallax
    ═══════════════════════════════════════════ */
 
-@keyframes story-float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-24px) rotate(4deg); }
+@keyframes story-particle {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-18px) translateX(6px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-8px) translateX(-4px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-22px) translateX(2px);
+    opacity: 0.6;
+  }
 }
 
-@keyframes story-float-reverse {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(18px) rotate(-3deg); }
+.story-particle {
+  animation: story-particle 6s ease-in-out infinite;
 }
 
-@keyframes story-pulse {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.5); }
-}
-
-.story-float {
-  animation: story-float 6s ease-in-out infinite;
-}
-
-.story-float-reverse {
-  animation: story-float-reverse 7s ease-in-out infinite;
-}
-
-.story-pulse {
-  animation: story-pulse 4s ease-in-out infinite;
-}
-
-/* Story card 3D depth layers */
-.story-card-layer {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Horizontal line reveal */
-@keyframes line-reveal {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
-.story-line-reveal {
-  transform-origin: left;
-  animation: line-reveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-/* Text character stagger */
-@keyframes char-reveal {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Glass shard floating */
-@keyframes story-glass-shard {
-  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-  50% { transform: translateY(-30px) rotate(6deg) scale(1.04); }
-}
-
-@keyframes story-glass-shard-reverse {
-  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-  50% { transform: translateY(22px) rotate(-4deg) scale(0.97); }
-}
-
-.story-glass-shard {
-  animation: story-glass-shard 8s ease-in-out infinite;
-}
-
-.story-glass-shard-reverse {
-  animation: story-glass-shard-reverse 9s ease-in-out infinite;
+@keyframes scroll-hint-line {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(0%); }
+  100% { transform: translateY(100%); }
 }

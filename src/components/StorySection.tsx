@@ -1,36 +1,42 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 const STORY_IMAGE =
   'https://res.cloudinary.com/dklycgquj/image/upload/v1787201076/historia_u5skcx.jpg'
 
-const STORY_LINES = [
-  { text: 'Todo empezó con', style: 'normal' as const },
-  { text: 'un hambre diferente.', style: 'accent' as const },
-  { text: '', style: 'break' as const },
-  { text: 'Daniel Bojorque soñaba con un lugar', style: 'normal' as const },
-  { text: 'donde la familia se reuniera', style: 'normal' as const },
-  { text: 'alrededor de una buena mesa.', style: 'normal' as const },
-  { text: '', style: 'break' as const },
-  { text: 'Así nació Ajitate:', style: 'bold' as const },
-  { text: 'tex-mex con alma en Cuenca.', style: 'accent' as const },
+const TIMELINE = [
+  {
+    year: '2019',
+    title: 'El Sueño',
+    body: 'Daniel Bojorque soñaba con un lugar donde la familia se reuniera alrededor de una buena mesa.',
+  },
+  {
+    year: '2020',
+    title: 'La Cocina',
+    body: 'Las primeras hamburguesas Tex-Mex nacieron en una cocina pequeña, pero con un sabor enorme.',
+  },
+  {
+    year: 'Hoy',
+    title: 'La Familia',
+    body: 'Ajitate es hoy el punto de encuentro de Cuenca: risas, familia y el mejor sabor tex-mex.',
+  },
 ]
 
 export function StorySection() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  const imageContainerRef = useRef<HTMLDivElement>(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
-  const [parallaxY, setParallaxY] = useState(0)
+  const [imageVisible, setImageVisible] = useState(false)
+  const [activeNode, setActiveNode] = useState(-1)
 
   useEffect(() => {
     const el = sectionRef.current
     if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true)
+        if (entry.isIntersecting) setImageVisible(true)
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     )
     observer.observe(el)
     return () => observer.disconnect()
@@ -38,352 +44,379 @@ export function StorySection() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!imageRef.current) return
-      const rect = imageRef.current.getBoundingClientRect()
+      if (!sectionRef.current) return
+      const rect = sectionRef.current.getBoundingClientRect()
       const viewH = window.innerHeight
-      const progress = 1 - (rect.top + rect.height) / (viewH + rect.height)
-      setParallaxY((progress - 0.5) * 40)
+      const raw = 1 - (rect.top + rect.height) / (viewH + rect.height)
+      const clamped = Math.max(0, Math.min(1, raw))
+      setScrollProgress(clamped)
+      if (clamped > 0.15 && clamped < 0.45) setActiveNode(0)
+      else if (clamped >= 0.45 && clamped < 0.75) setActiveNode(1)
+      else if (clamped >= 0.75) setActiveNode(2)
+      else setActiveNode(-1)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width
-    const y = (e.clientY - rect.top) / rect.height
-    setMousePos({ x, y })
-    setTilt({ x: (y - 0.5) * -8, y: (x - 0.5) * 8 })
-  }
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    setMousePos({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    })
+  }, [])
 
-  const onMouseLeave = () => {
-    setTilt({ x: 0, y: 0 })
-    setMousePos({ x: 0.5, y: 0.5 })
-  }
+  const parallaxY = (scrollProgress - 0.5) * 60
+  const imageScale = 1.2 + scrollProgress * 0.05
+  const diagonalShift = scrollProgress * 8
 
   return (
     <section
       ref={sectionRef}
-      className="relative py-20 px-6 lg:px-16 overflow-hidden"
-      style={{ background: '#0a0a0a' }}
+      onMouseMove={onMouseMove}
+      className="relative overflow-hidden"
+      style={{ background: '#0a0a0a', minHeight: '200vh' }}
     >
-      {/* Ambient background glow */}
+      {/* ── FILM GRAIN OVERLAY ── */}
       <div
-        className="absolute inset-0 pointer-events-none transition-opacity duration-1000"
+        className="pointer-events-none absolute inset-0 z-50 opacity-[0.04]"
         style={{
-          opacity: isVisible ? 1 : 0,
-          background: `radial-gradient(1000px 800px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(229,57,53,0.04), transparent 60%)`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      {/* Floating glass shards */}
-      <div
-        className="absolute top-16 left-[6%] w-24 h-36 rounded-2xl pointer-events-none story-glass-shard"
-        style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005))',
-          border: '1px solid rgba(255,255,255,0.04)',
-          backdropFilter: 'blur(2px)',
-          animationDelay: '0s',
-          opacity: isVisible ? 1 : 0,
-          transition: 'opacity 1.2s ease',
-        }}
-      />
-      <div
-        className="absolute bottom-20 right-[8%] w-16 h-24 rounded-xl pointer-events-none story-glass-shard-reverse"
-        style={{
-          background: 'linear-gradient(225deg, rgba(229,57,53,0.04), rgba(229,57,53,0.005))',
-          border: '1px solid rgba(229,57,53,0.05)',
-          backdropFilter: 'blur(2px)',
-          animationDelay: '1.5s',
-          opacity: isVisible ? 1 : 0,
-          transition: 'opacity 1.2s ease 0.3s',
-        }}
-      />
-      <div
-        className="absolute top-[35%] right-[4%] w-10 h-10 rounded-full pointer-events-none story-pulse"
-        style={{
-          background: 'radial-gradient(circle, rgba(229,57,53,0.12), transparent 70%)',
-          animationDelay: '2s',
-        }}
-      />
-      <div
-        className="absolute bottom-[30%] left-[12%] w-3 h-3 rounded-full pointer-events-none story-float"
-        style={{
-          background: 'rgba(229,57,53,0.15)',
-          animationDelay: '0.5s',
-        }}
-      />
-      <div
-        className="absolute top-[60%] right-[20%] w-2 h-2 rounded-full pointer-events-none story-pulse"
-        style={{
-          background: 'rgba(255,255,255,0.1)',
-          animationDelay: '3s',
-        }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Section label */}
+      {/* ── FLOATING PARTICLES ── */}
+      {[...Array(12)].map((_, i) => (
         <div
-          className={`mb-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          key={i}
+          className="pointer-events-none absolute rounded-full story-particle"
+          style={{
+            width: i % 3 === 0 ? 3 : 2,
+            height: i % 3 === 0 ? 3 : 2,
+            background: i % 4 === 0 ? 'rgba(229,57,53,0.25)' : 'rgba(255,255,255,0.08)',
+            left: `${8 + (i * 7.5) % 85}%`,
+            top: `${12 + (i * 13) % 75}%`,
+            animationDuration: `${5 + (i % 4) * 2}s`,
+            animationDelay: `${i * 0.7}s`,
+          }}
+        />
+      ))}
+
+      {/* ── STICKY CONTAINER ── */}
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* ── FULL-BLEED IMAGE ── */}
+        <div
+          ref={imageContainerRef}
+          className="absolute inset-0"
+          style={{ clipPath: `polygon(${diagonalShift}% 0, 100% 0, 100% 100%, ${diagonalShift - 5}% 100%)` }}
         >
-          <span
-            className="text-sm font-semibold uppercase tracking-[0.3em]"
-            style={{ color: '#e53935' }}
-          >
-            Nuestra Historia
-          </span>
+          {/* Base image */}
           <div
-            className="mt-3 h-[2px] w-16 rounded-full"
+            className="absolute inset-0"
             style={{
-              background: 'linear-gradient(90deg, #e53935, rgba(229,57,53,0.2))',
+              backgroundImage: `url(${STORY_IMAGE})`,
+              backgroundSize: 'cover',
+              backgroundPosition: '30% center',
+              transform: `translateY(${parallaxY}px) scale(${imageScale})`,
+              transition: 'transform 0.15s ease-out',
+              filter: imageVisible ? 'none' : 'scale(1.3) blur(8px)',
+              opacity: imageVisible ? 1 : 0,
+              transitionProperty: 'transform, filter, opacity',
+              transitionDuration: '1.2s, 1.5s, 1s',
+              transitionTimingFunction: 'ease-out',
+            }}
+          />
+
+          {/* Diagonal color wash */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(${135 + diagonalShift}deg, rgba(229,57,53,0.12) 0%, transparent 40%, rgba(0,0,0,0.6) 100%)`,
+            }}
+          />
+
+          {/* Mouse-following light beam */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `radial-gradient(600px 500px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(229,57,53,0.06), transparent 60%)`,
+              transition: 'background 0.3s ease',
+            }}
+          />
+
+          {/* Vignette */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse at 40% 50%, transparent 20%, rgba(10,10,10,0.6) 80%)',
+            }}
+          />
+
+          {/* Left edge dissolve */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.4) 15%, transparent 40%)',
+            }}
+          />
+
+          {/* Right edge dissolve */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(270deg, rgba(10,10,10,1) 0%, rgba(10,10,10,0.85) 30%, transparent 60%)',
+            }}
+          />
+
+          {/* Bottom dissolve */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(0deg, #0a0a0a 0%, rgba(10,10,10,0.6) 20%, transparent 50%)',
             }}
           />
         </div>
 
-        {/* Main card */}
-        <div style={{ perspective: '1400px' }}>
+        {/* ── DIAGONAL EDGE LINE ── */}
+        <div
+          className="absolute top-0 bottom-0 w-[2px] pointer-events-none z-10"
+          style={{
+            left: `calc(${diagonalShift}% + 20px)`,
+            background: 'linear-gradient(to bottom, transparent 5%, rgba(229,57,53,0.4) 30%, rgba(229,57,53,0.15) 70%, transparent 95%)',
+            transform: 'skewX(-4deg)',
+            opacity: imageVisible ? 1 : 0,
+            transition: 'opacity 1.5s ease 0.5s',
+          }}
+        />
+
+        {/* ── VERTICAL TIMELINE (left) ── */}
+        <div className="absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-0">
+          {/* Timeline line */}
           <div
-            onMouseMove={onMouseMove}
-            onMouseLeave={onMouseLeave}
-            className="relative flex flex-col lg:flex-row rounded-[28px] overflow-hidden cursor-default"
+            className="absolute top-0 bottom-0 w-[1px]"
             style={{
-              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-              transformStyle: 'preserve-3d',
-              transition: 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
-              boxShadow: isVisible
-                ? '0 40px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.06)'
-                : 'none',
-              background: 'linear-gradient(145deg, #111 0%, #0d0d0d 100%)',
+              background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.12), transparent)',
             }}
-          >
-            {/* ── Left: Image with parallax depth ── */}
-            <div
-              ref={imageRef}
-              className="relative w-full lg:w-[45%] h-[400px] lg:h-[600px] overflow-hidden"
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              {/* Base image with parallax */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `url(${STORY_IMAGE})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'left center',
-                  transform: `translateY(${parallaxY}px) scale(1.15)`,
-                  transition: 'transform 0.3s ease-out',
-                }}
-              />
+          />
+          {/* Progress line */}
+          <div
+            className="absolute top-0 w-[1px] transition-all duration-500"
+            style={{
+              height: `${scrollProgress * 100}%`,
+              background: 'linear-gradient(to bottom, rgba(229,57,53,0.6), rgba(229,57,53,0.2))',
+            }}
+          />
 
-              {/* Depth layer — warm overlay */}
+          {TIMELINE.map((_, i) => {
+            const isActive = activeNode >= i
+            return (
               <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(229,57,53,0.08) 0%, rgba(0,0,0,0.3) 50%, rgba(10,10,10,0.8) 100%)',
-                }}
-              />
-
-              {/* Inner vignette */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'radial-gradient(ellipse at 25% 40%, transparent 20%, rgba(10,10,10,0.7) 80%)',
-                }}
-              />
-
-              {/* Right fade to card */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'linear-gradient(90deg, transparent 50%, #111 100%)',
-                }}
-              />
-
-              {/* Bottom fade */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'linear-gradient(0deg, #111 0%, transparent 25%)',
-                }}
-              />
-
-              {/* Glass overlay strip */}
-              <div
-                className="absolute bottom-0 left-0 right-0 h-16"
-                style={{
-                  background: 'linear-gradient(0deg, rgba(17,17,17,0.95), transparent)',
-                }}
-              />
-            </div>
-
-            {/* ── Right: Content ── */}
-            <div className="relative w-full lg:w-[55%] p-8 lg:p-14 flex flex-col justify-center">
-              {/* Animated vertical gold line */}
-              <div
-                className="absolute left-0 top-10 bottom-10 w-[2px] rounded-full transition-all duration-1000 hidden lg:block"
-                style={{
-                  background:
-                    'linear-gradient(to bottom, #e53935, rgba(229,57,53,0.15), transparent)',
-                  transformOrigin: 'top',
-                  transform: isVisible ? 'scaleY(1)' : 'scaleY(0)',
-                }}
-              />
-
-              {/* Story text */}
-              <div className="space-y-1">
-                {STORY_LINES.map((line, i) => {
-                  if (line.style === 'break') return <div key={i} className="h-5" />
-                  return (
-                    <div key={i} className="overflow-hidden">
-                      <span
-                        className={`block transition-all duration-700 ${
-                          isVisible
-                            ? 'opacity-100 translate-y-0'
-                            : 'opacity-0 translate-y-8'
-                        } ${
-                          line.style === 'accent'
-                            ? 'font-semibold'
-                            : line.style === 'bold'
-                            ? 'text-white font-bold'
-                            : 'text-white/70'
-                        }`}
-                        style={{
-                          fontFamily:
-                            line.style === 'accent'
-                              ? 'var(--font-display)'
-                              : 'var(--font-sans)',
-                          fontSize:
-                            line.style === 'accent'
-                              ? 'clamp(1.6rem, 3.2vw, 2.4rem)'
-                              : line.style === 'bold'
-                              ? 'clamp(1.1rem, 1.8vw, 1.3rem)'
-                              : 'clamp(0.95rem, 1.5vw, 1.1rem)',
-                          lineHeight: 1.65,
-                          transitionDelay: `${0.2 + i * 0.08}s`,
-                          color:
-                            line.style === 'accent' ? '#e53935' : undefined,
-                        }}
-                      >
-                        {line.text}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* Gold divider */}
-              <div
-                className={`my-8 h-[1px] transition-all duration-1000 ${
-                  isVisible ? 'opacity-100' : 'opacity-0'
-                }`}
-                style={{
-                  background:
-                    'linear-gradient(90deg, rgba(229,57,53,0.5), rgba(229,57,53,0.08), transparent)',
-                  transitionDelay: '0.9s',
-                  transformOrigin: 'left',
-                }}
-              />
-
-              {/* Founder card — glassmorphic */}
-              <div
-                className={`relative p-5 rounded-2xl transition-all duration-700 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-                }`}
-                style={{
-                  transitionDelay: '1s',
-                  background:
-                    'linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <div className="flex items-center gap-4">
-                  {/* Founder avatar ring */}
-                  <div
-                    className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, rgba(229,57,53,0.15), rgba(229,57,53,0.05))',
-                      border: '2px solid rgba(229,57,53,0.25)',
-                      boxShadow: '0 0 20px rgba(229,57,53,0.08)',
-                    }}
-                  >
-                    <span
-                      className="text-lg font-bold"
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        color: '#e53935',
-                      }}
-                    >
-                      DB
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-white text-sm font-semibold">
-                      Daniel Bojorque
-                    </p>
-                    <p className="text-white/40 text-xs mt-0.5">
-                      Fundador de Ajitate
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats row */}
-              <div
-                className={`mt-8 flex gap-10 transition-all duration-700 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-                }`}
-                style={{ transitionDelay: '1.2s' }}
-              >
-                {[
-                  { num: '2019', label: 'Fundado' },
-                  { num: '5K+', label: 'Clientes felices' },
-                  { num: 'Cuenca', label: 'Ecuador' },
-                ].map((stat) => (
-                  <div key={stat.label}>
-                    <p
-                      className="text-xl font-bold"
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        color: '#e53935',
-                      }}
-                    >
-                      {stat.num}
-                    </p>
-                    <p className="text-white/30 text-[11px] uppercase tracking-wider mt-1">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom quote accent */}
-              <div
-                className={`mt-10 flex items-center gap-3 transition-all duration-700 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-                style={{ transitionDelay: '1.4s' }}
+                key={i}
+                className="relative flex items-center justify-center"
+                style={{ height: 100 }}
               >
                 <div
-                  className="w-8 h-[2px] rounded-full"
-                  style={{ background: 'rgba(229,57,53,0.3)' }}
-                />
-                <span
-                  className="text-xs italic"
+                  className="relative z-10 rounded-full transition-all duration-500"
                   style={{
-                    color: 'rgba(229,57,53,0.4)',
-                    fontFamily: 'var(--font-sans)',
+                    width: isActive ? 14 : 8,
+                    height: isActive ? 14 : 8,
+                    background: isActive ? '#e53935' : 'rgba(255,255,255,0.15)',
+                    boxShadow: isActive
+                      ? '0 0 16px rgba(229,57,53,0.5), 0 0 32px rgba(229,57,53,0.2)'
+                      : 'none',
+                    border: isActive ? '2px solid rgba(229,57,53,0.3)' : '2px solid rgba(255,255,255,0.08)',
+                  }}
+                />
+                {/* Year label */}
+                <span
+                  className="absolute left-8 whitespace-nowrap text-xs font-semibold uppercase tracking-widest transition-all duration-500"
+                  style={{
+                    color: isActive ? '#e53935' : 'rgba(255,255,255,0.2)',
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.15em',
                   }}
                 >
-                  "La mesa unia a todos"
+                  {TIMELINE[i].year}
                 </span>
               </div>
+            )
+          })}
+        </div>
+
+        {/* ── CONTENT OVERLAY ── */}
+        <div className="absolute inset-0 z-10 flex items-center">
+          <div className="w-full max-w-7xl mx-auto px-6 lg:px-20 flex flex-col lg:flex-row items-center lg:items-end justify-between gap-12 lg:gap-8">
+
+            {/* ── LEFT: Big title ── */}
+            <div className="flex-1 max-w-xl">
+              {/* Section label */}
+              <div
+                className={`mb-6 transition-all duration-700 ${imageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+              >
+                <span
+                  className="text-xs font-semibold uppercase tracking-[0.35em]"
+                  style={{ color: '#e53935' }}
+                >
+                  Nuestra Historia
+                </span>
+              </div>
+
+              {/* Giant headline */}
+              <h2
+                className={`transition-all duration-1000 ${imageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(3rem, 8vw, 7rem)',
+                  lineHeight: 0.9,
+                  color: 'white',
+                  letterSpacing: '-0.02em',
+                  transitionDelay: '0.2s',
+                }}
+              >
+                <span className="block">UN SABOR</span>
+                <span className="block" style={{ color: '#e53935' }}>QUE NACE</span>
+                <span className="block text-white/40" style={{ fontSize: '0.55em', letterSpacing: '0.08em' }}>
+                  DE LA FAMILIA
+                </span>
+              </h2>
+
+              {/* Decorative line */}
+              <div
+                className={`mt-8 transition-all duration-1000 ${imageVisible ? 'opacity-100' : 'opacity-0'}`}
+                style={{ transitionDelay: '0.6s' }}
+              >
+                <div
+                  className="h-[1px] w-24"
+                  style={{
+                    background: 'linear-gradient(90deg, #e53935, transparent)',
+                    transformOrigin: 'left',
+                    transform: imageVisible ? 'scaleX(1)' : 'scaleX(0)',
+                    transition: 'transform 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.8s',
+                  }}
+                />
+              </div>
             </div>
+
+            {/* ── RIGHT: Glass panels ── */}
+            <div className="flex-1 max-w-lg flex flex-col gap-4">
+              {TIMELINE.map((item, i) => {
+                const isVisible = activeNode >= i
+                const isCurrent = activeNode === i
+                return (
+                  <div
+                    key={i}
+                    className="relative rounded-2xl overflow-hidden transition-all duration-700"
+                    style={{
+                      opacity: isVisible ? 1 : 0,
+                      transform: isVisible
+                        ? 'translateX(0) scale(1)'
+                        : 'translateX(40px) scale(0.95)',
+                      transitionDelay: `${i * 0.15}s`,
+                      background: isCurrent
+                        ? 'linear-gradient(135deg, rgba(229,57,53,0.08), rgba(229,57,53,0.02))'
+                        : 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008))',
+                      border: isCurrent
+                        ? '1px solid rgba(229,57,53,0.15)'
+                        : '1px solid rgba(255,255,255,0.04)',
+                      backdropFilter: 'blur(16px)',
+                      padding: '1.5rem',
+                    }}
+                  >
+                    {/* Year badge */}
+                    <div className="flex items-center gap-3 mb-2">
+                      <span
+                        className="text-xs font-bold uppercase tracking-widest"
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          color: isCurrent ? '#e53935' : 'rgba(255,255,255,0.3)',
+                          fontSize: '0.75rem',
+                        }}
+                      >
+                        {item.year}
+                      </span>
+                      <div
+                        className="flex-1 h-[1px]"
+                        style={{
+                          background: isCurrent
+                            ? 'linear-gradient(90deg, rgba(229,57,53,0.3), transparent)'
+                            : 'linear-gradient(90deg, rgba(255,255,255,0.06), transparent)',
+                        }}
+                      />
+                    </div>
+
+                    {/* Title */}
+                    <h3
+                      className="text-white font-semibold mb-1"
+                      style={{
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: 'clamp(1rem, 1.5vw, 1.15rem)',
+                      }}
+                    >
+                      {item.title}
+                    </h3>
+
+                    {/* Body */}
+                    <p
+                      className="leading-relaxed"
+                      style={{
+                        color: isCurrent ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)',
+                        fontSize: 'clamp(0.8rem, 1.2vw, 0.9rem)',
+                        transition: 'color 0.5s ease',
+                      }}
+                    >
+                      {item.body}
+                    </p>
+                  </div>
+                )
+              })}
+
+              {/* Founder badge */}
+              <div
+                className={`flex items-center gap-4 mt-2 transition-all duration-700 ${activeNode >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                style={{ transitionDelay: '0.3s' }}
+              >
+                <div
+                  className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(229,57,53,0.12), rgba(229,57,53,0.04))',
+                    border: '1.5px solid rgba(229,57,53,0.2)',
+                  }}
+                >
+                  <span
+                    className="text-sm font-bold"
+                    style={{ fontFamily: 'var(--font-display)', color: '#e53935' }}
+                  >
+                    DB
+                  </span>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-semibold">Daniel Bojorque</p>
+                  <p className="text-white/30 text-xs">Fundador de Ajitate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── BOTTOM SCROLL HINT ── */}
+        <div
+          className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 transition-all duration-700 ${scrollProgress > 0.1 ? 'opacity-0' : 'opacity-100'}`}
+        >
+          <span className="text-white/20 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+          <div className="w-[1px] h-8 bg-white/10 relative overflow-hidden">
+            <div
+              className="absolute top-0 left-0 w-full bg-white/40"
+              style={{
+                animation: 'scroll-hint-line 2s ease-in-out infinite',
+              }}
+            />
           </div>
         </div>
       </div>
