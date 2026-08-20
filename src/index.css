@@ -10,6 +10,11 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
