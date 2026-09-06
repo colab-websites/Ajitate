@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { MENU, lineKey, money, subtotal, unitPrice } from '../data/menu'
+import { formatPhone } from '../data/phone'
 import { DeliveryPin } from './DeliveryPin'
 import type { Pin } from './DeliveryPin'
 import type { CartLine } from '../data/menu'
 
-export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
+export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:boolean}}) {
   const dialog=useRef<HTMLDialogElement>(null)
   const [step,setStep]=useState<'browse'|'item'|'cart'|'details'|'summary'>('browse')
   const [selected,setSelected]=useState(MENU[0].id)
@@ -27,8 +28,15 @@ export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
   const count=cart.reduce((s,l)=>s+l.quantity,0)
   const total=subtotal(cart)
   const choose=(id:string)=>{setSelected(id);setSide('');setQuantity(1);setStep('item');setNotice('')}
+  const quickAdd=(id:string)=>{
+    setCart(previous=>{const existing=previous.find(l=>l.id===id&&!l.side);return existing?previous.map(l=>l===existing?{...l,quantity:Math.min(99,l.quantity+1)}:l):[...previous,{id,side:'',quantity:1}]})
+    setNotice(`${MENU.find(i=>i.id===id)!.name} agregado`)
+  }
+  const hasBeverage=cart.some(l=>!!l.side||['Bebidas','Cervezas','Cocteles'].includes(MENU.find(i=>i.id===l.id)!.category))
+  useEffect(()=>{if(!hasBeverage)setStraws(false)},[hasBeverage])
   useEffect(()=>{
     if(!request.serial)return
+    if(request.quick&&request.id){quickAdd(request.id);return}
     if(request.id)choose(request.id);else setStep('browse')
     setCopied(false);setNotice('')
     dialog.current?.showModal()
@@ -48,25 +56,25 @@ export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
     ...cart.map(l=>`${l.quantity} × ${MENU.find(i=>i.id===l.id)!.name}${l.side?` · Combo: ${l.side} + bebida`:''}: ${money(unitPrice(l)*l.quantity)}`),
     `Subtotal de productos: ${money(total)}`,
     method==='delivery'?`Entrega a domicilio: ${address.trim()}`:'Retiro en el local (por confirmar)',
-    `Nombre: ${name.trim()}`,`Teléfono: ${phone.trim()}`,
-    `Servilletas: ${napkins?'Sí':'No'} · Sorbetes: ${straws?'Sí':'No'} (sin recargo)`,
+    `Nombre: ${name.trim()}`,`Teléfono: ${formatPhone(phone)}`,
+    `Servilletas: ${napkins?'Sí':'No'}${hasBeverage?` · Sorbetes: ${straws?'Sí':'No'}`:''} (sin recargo)`,
     ...(notes.trim()?[`Notas: ${notes.trim()}`]:[]),
     'Por favor confirmar disponibilidad, opciones de bebida del combo, costo de entrega, total final y forma de pago.'
   ].join('\n')
   const copy=async()=>{try {await navigator.clipboard.writeText(summary);setCopied(true)} catch {setNotice('No se pudo copiar automáticamente. Selecciona el resumen para copiarlo.')}}
   const heading={browse:'¿QUÉ SE TE ANTOJA?',item:item.name,cart:'TU PEDIDO',details:'LOS ÚLTIMOS DETALLES',summary:'TODO LISTO PARA CONSULTAR'}[step]
   return <>
-    {count>0&&<button className="cart-floating liquid-panel" onClick={()=>{setStep('cart');dialog.current?.showModal()}}>Tu pedido <b>{count}</b> · {money(total)}</button>}
+    {count>0&&<button className="cart-floating liquid-panel" onClick={()=>{setStep('cart');dialog.current?.showModal()}}>Ver carrito <b>{count}</b> · {money(total)}</button>}
     <dialog ref={dialog} className="order-drawer" aria-labelledby="drawer-title" onClick={e=>{if(e.target===e.currentTarget)close()}}>
       <div className="drawer-shell">
         <header className="drawer-header"><div><p className="section-kicker">PEDIDOS AJITATE</p><h2 id="drawer-title">{heading}</h2></div><button className="drawer-close" aria-label="Cerrar pedido" onClick={close}>×</button></header>
         <nav className="drawer-steps" aria-label="Pasos del pedido"><button onClick={()=>setStep('browse')} aria-current={step==='browse'||step==='item'?'step':undefined}>1 · Menú</button><button onClick={()=>setStep('cart')} aria-current={step==='cart'?'step':undefined}>2 · Pedido ({count})</button><span aria-current={step==='details'||step==='summary'?'step':undefined}>3 · Confirmar</span></nav>
         <div className="drawer-body">
-          {notice&&step==='cart'&&cart.length>0&&<p className="order-notice" role="status">{notice}</p>}
+          {notice&&cart.length>0&&<p className="order-notice" role="status">{notice}</p>}
           {step==='browse'&&<>
             <input className="order-input" type="search" aria-label="Buscar producto para pedir" placeholder="Hamburguesa, tacos, bebida…" value={search} onChange={e=>setSearch(e.target.value)}/>
             <div className="drawer-categories">{['Todo',...new Set(MENU.map(i=>i.category))].map(c=><button key={c} aria-pressed={category===c} onClick={()=>setCategory(c)}>{c}</button>)}</div>
-            <div className="drawer-products">{MENU.filter(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(i=><button key={i.id} onClick={()=>choose(i.id)}><span><small>{i.category}</small><strong>{i.name}</strong></span><span>{money(i.price)} <b>+</b></span></button>)}</div>
+            <div className="drawer-products">{MENU.filter(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(i=><article key={i.id} className="drawer-product"><button className="drawer-product-info" onClick={()=>choose(i.id)}><small>{i.category}</small><strong>{i.name}</strong><p>{i.description}</p><span>{money(i.price)}</span></button><button className="quick-add" aria-label={`Agregar ${i.name}`} onClick={()=>quickAdd(i.id)}>+</button></article>)}</div>
             {!MENU.some(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))&&<p>No encontramos ese producto.</p>}
           </>}
           {step==='item'&&<div className="item-options"><span className="food-category">{item.category}</span><p>{item.description}</p><strong className="item-price">{money(item.price)}</strong>
@@ -80,15 +88,16 @@ export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
           </>}</>}
           {step==='details'&&<form onSubmit={e=>{e.preventDefault();setCopied(false);setStep('summary')}}>
             <label className="form-label">Tu nombre<input className="order-input" required maxLength={80} autoComplete="name" value={name} onChange={e=>setName(e.target.value)}/></label>
-            <label className="form-label">Teléfono<input className="order-input" required type="tel" pattern="[+0-9 ()-]{7,20}" autoComplete="tel" value={phone} onChange={e=>setPhone(e.target.value)}/></label>
+            <label className="form-label">Teléfono<input className="order-input" required type="tel" inputMode="tel" minLength={10} maxLength={20} autoComplete="tel" value={phone} placeholder="(098) 304-7406" onChange={e=>setPhone(e.target.value)} onBlur={()=>setPhone(formatPhone(phone))}/></label>
             <fieldset><legend>¿Cómo lo prefieres?</legend><label className="option-choice"><input type="radio" name="delivery" checked={method==='delivery'} onChange={()=>setMethod('delivery')}/>A domicilio</label><label className="option-choice"><input type="radio" name="delivery" checked={method==='pickup'} onChange={()=>setMethod('pickup')}/>Retiro en el local · por confirmar</label></fieldset>
             {method==='delivery'&&<label className="form-label">Dirección y referencia<textarea className="order-input" required maxLength={400} autoComplete="street-address" value={address} onChange={e=>setAddress(e.target.value)}/></label>}
             {method==='delivery'&&<DeliveryPin pin={pin} onChange={setPin}/>}
-            <fieldset><legend>¿Necesitas algo más? · Sin recargo</legend><label className="option-choice"><input type="checkbox" checked={napkins} onChange={e=>setNapkins(e.target.checked)}/>Servilletas</label><label className="option-choice"><input type="checkbox" checked={straws} onChange={e=>setStraws(e.target.checked)}/>Sorbetes</label></fieldset>
+            <fieldset><legend>¿Necesitas algo más? · Sin recargo</legend><label className="option-choice"><input type="checkbox" checked={napkins} onChange={e=>setNapkins(e.target.checked)}/>Servilletas</label>{hasBeverage&&<label className="option-choice"><input type="checkbox" checked={straws} onChange={e=>setStraws(e.target.checked)}/>Sorbetes</label>}</fieldset>
             <label className="form-label">Notas para el restaurante<textarea className="order-input" maxLength={600} placeholder="Preferencias, alergias o consultas…" value={notes} onChange={e=>setNotes(e.target.value)}/></label><p className="order-hint">Las modificaciones y solicitudes especiales están sujetas a confirmación.</p><button className="order-primary" type="submit">Revisar pedido · {money(total)}</button>
           </form>}
-          {step==='summary'&&<><p className="order-hint">Revisa tu pedido antes de compartirlo. Todavía no ha sido enviado ni confirmado.</p><textarea className="order-summary" aria-label="Resumen del pedido" readOnly value={summary}/><button className="order-primary" onClick={copy}>{copied?'Resumen copiado ✓':'Copiar resumen del pedido'}</button><p role="status" className="order-hint">{copied?'Puedes pegar el resumen en tu conversación con el restaurante.':''}</p><a className="order-call" href="tel:+593983047406">Llamar al 0983047406 ↗</a><p className="order-hint">Número de pedidos publicado en el menú. Confirma el total y el pago directamente con Ajitate.</p><button className="glass-action" onClick={()=>setStep('details')}>Editar datos</button></>}
+          {step==='summary'&&<><p className="order-hint">Revisa tu pedido antes de compartirlo. Todavía no ha sido enviado ni confirmado.</p><textarea className="order-summary" aria-label="Resumen del pedido" readOnly value={summary}/><button className="order-primary" onClick={copy}>{copied?'Resumen copiado ✓':'Copiar resumen del pedido'}</button><p role="status" className="order-hint">{copied?'Puedes pegar el resumen en tu conversación con el restaurante.':''}</p><a className="order-call" href="tel:+593983047406">Llamar al (098) 304-7406 ↗</a><p className="order-hint">Número de pedidos publicado en el menú. Confirma el total y el pago directamente con Ajitate.</p><button className="glass-action" onClick={()=>setStep('details')}>Editar datos</button></>}
         </div>
+        {count>0&&['browse','item'].includes(step)&&<button className="drawer-cart-bubble" onClick={()=>setStep('cart')}>Ver carrito · {count} productos · {money(total)} →</button>}
       </div>
     </dialog>
   </>

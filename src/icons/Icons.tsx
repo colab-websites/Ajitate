@@ -88,3 +88,7 @@ export function YoutubeIcon({ className = "" }: { className?: string }) {
     </svg>
   )
 }
+
+export function TikTokIcon({className=''}:{className?:string}) {
+ return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 2c.4 2.5 1.8 4 4.4 4.2v3.5a9 9 0 0 1-4.4-1.3v7.3a6.2 6.2 0 1 1-5.4-6.2V13a2.7 2.7 0 1 0 1.8 2.6V2z"/></svg>
+}

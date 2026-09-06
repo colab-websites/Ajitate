@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { CATEGORIES, MENU, money } from '../data/menu'
 import type { MenuItem } from '../data/menu'
 
-export function RestaurantMenu({onSelect}:{onSelect:(id:string)=>void}) {
+export function RestaurantMenu({onSelect,onQuickAdd}:{onSelect:(id:string)=>void;onQuickAdd:(id:string)=>void}) {
   const [category,setCategory]=useState('Hamburguesas')
   const [search,setSearch]=useState('')
   const visible=MENU.filter(i=>search ? `${i.name} ${i.description}`.toLocaleLowerCase().includes(search.toLocaleLowerCase()) : !i.special && i.category===category)
   const card=(item:MenuItem)=><article className="food-card liquid-panel" key={item.id}>
-    <div className="food-card-copy"><span className="food-category">{item.category}</span><h3>{item.name}</h3><p>{item.description}</p><div className="food-card-bottom"><strong>{money(item.price)}</strong><button className="glass-action" onClick={()=>onSelect(item.id)} aria-label={`Agregar ${item.name}`}>Agregar +</button></div></div>
+    <div className="food-card-copy"><span className="food-category">{item.category}</span><h3><button className="product-details" onClick={()=>onSelect(item.id)} aria-label={`Ver ${item.name}`}>{item.name}</button></h3><p>{item.description}</p><div className="food-card-bottom"><strong>{money(item.price)}</strong><button className="glass-action" onClick={()=>onQuickAdd(item.id)} aria-label={`Agregar ${item.name}`}>Agregar +</button></div></div>
   </article>
   return <>
     <section id="menu" className="restaurant-menu">

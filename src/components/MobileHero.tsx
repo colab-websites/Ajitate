@@ -1,3 +1,4 @@
+import { SOCIALS } from '../data/socials'
 import { CartIcon, SearchIcon, InstagramIcon, FacebookIcon, YoutubeIcon, ArrowDown, CaretLeft, CaretRight } from '../icons/Icons'
 
 const LOGO_URL = 'https://res.cloudinary.com/dlsw7vg31/image/upload/v1786686042/AJITATE_LOGO_sin_slogan_f9iqsw.png'
@@ -100,11 +101,11 @@ export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
       {/* Footer row */}
       <div className="px-4 mt-8 flex items-center justify-between fade-up" style={{ animationDelay: '0.38s' }}>
         <div className="flex items-center gap-3">
-          {[InstagramIcon, FacebookIcon, YoutubeIcon].map((Icon, i) => (
+          {SOCIALS.map(({Icon,name,href}, i) => (
             <a
               key={i}
-              href="#redes"
-              aria-label={`${['Instagram', 'Facebook', 'YouTube'][i]}: información de redes oficiales`}
+              href={href} target="_blank" rel="noreferrer"
+              aria-label={name}
               className="size-11 rounded-full border border-white/70 flex items-center justify-center text-white transition-colors hover:bg-white hover:text-black"
             >
               <Icon className="w-5 h-5" />

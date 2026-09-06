@@ -1,3 +1,5 @@
+import { SOCIALS } from './data/socials'
+import { BrandLogo } from './components/BrandLogo'
 import { useState } from 'react'
 import { useIsDesktop } from './hooks/useIsDesktop'
 import { DesktopHero } from './components/DesktopHero'
@@ -7,18 +9,17 @@ import { RestaurantMenu } from './components/RestaurantMenu'
 import { OrderDrawer } from './components/OrderDrawer'
 import { StorySection } from './components/StorySection'
 import { TestimonialsSection } from './components/TestimonialsSection'
-import { InstagramIcon, FacebookIcon, YoutubeIcon } from './icons/Icons'
 
 export default function App() {
   const isDesktop = useIsDesktop()
-  const [request,setRequest]=useState({serial:0,id:''})
-  const openOrder=(id='')=>setRequest(r=>({serial:r.serial+1,id}))
+  const [request,setRequest]=useState({serial:0,id:'',quick:false})
+  const openOrder=(id='',quick=false)=>setRequest(r=>({serial:r.serial+1,id,quick}))
   return <>
     <a className="skip-link" href="#menu">Saltar al menú</a>
     <DesktopNavbar onOrder={() => openOrder()} />
     <main>
       {isDesktop ? <DesktopHero /> : <MobileHero onOrder={openOrder} />}
-      <RestaurantMenu onSelect={openOrder} />
+      <RestaurantMenu onSelect={id=>openOrder(id)} onQuickAdd={id=>openOrder(id,true)} />
       <div id="nosotros"><StorySection /></div>
       <TestimonialsSection />
       <section id="ubicacion" className="contact-section">
@@ -29,17 +30,17 @@ export default function App() {
           <p className="contact-intro">La buena comida sabe mejor en buena compañía.</p>
           <div className="contact-grid">
             <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">↗</span><h3>Ubicación</h3><p>Av. Don Bosco, Cuenca<br />Local 1 · 3XMF+X8M</p><a className="contact-phone" href="https://maps.app.goo.gl/FTVdfzcjXtNxwSw76" target="_blank" rel="noreferrer">Cómo llegar · Local 1 ↗</a><small>Mapa enlazado por @ajitate.ec.</small></article>
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">◷</span><h3>Horarios</h3><p>Martes a sábado<br />12:00–15:00 · 18:00–22:00</p><a className="contact-phone" href="https://www.instagram.com/ajitate.ec/" target="_blank" rel="noreferrer">Horarios publicados en Instagram ↗</a></article>
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">♨</span><h3>Pedidos</h3><p>Tu próximo antojo empieza aquí.</p><button className="glass-action" onClick={() => openOrder()}>Información de pedidos ↗</button><a className="contact-phone" href="tel:+593983047406">0983047406</a></article>
+            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">◷</span><h3>Horarios</h3><p>Martes a sábado<br />12:00–15:00 · 18:00–22:00</p></article>
+            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">♨</span><h3>Pedidos</h3><p>Tu próximo antojo empieza aquí.</p><button className="glass-action" onClick={() => openOrder()}>Información de pedidos ↗</button><a className="contact-phone" href="tel:+593983047406">(098) 304-7406</a></article>
           </div>
           <div id="redes" className="social-placeholder liquid-panel">
-            <div><p className="section-kicker">SIGAMOS EN CONTACTO</p><h3>Más sabor, todos los días.</h3><a className="contact-phone" href="https://www.instagram.com/ajitate.ec/" target="_blank" rel="noreferrer">Instagram · @ajitate.ec ↗</a><p>Cuenta publicada en el menú. Facebook y YouTube por confirmar.</p></div>
-            <div className="social-preview" aria-hidden="true"><InstagramIcon /><FacebookIcon /><YoutubeIcon /></div>
+            <div><p className="section-kicker">SIGAMOS EN CONTACTO</p><h3>Más sabor, todos los días.</h3><a className="contact-phone" href="https://www.instagram.com/ajitate.ec/" target="_blank" rel="noreferrer">Instagram · @ajitate.ec ↗</a></div>
+            <div className="social-preview">{SOCIALS.map(({name,href,Icon})=><a key={name} href={href} target="_blank" rel="noreferrer" aria-label={name}><Icon/></a>)}</div>
           </div>
         </div>
       </section>
     </main>
-    <footer className="original-footer"><a href="#inicio">AJITATE</a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></footer>
+    <footer className="original-footer"><a href="#inicio" aria-label="Ajitate, inicio"><BrandLogo className="footer-brand"/></a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></footer>
     <OrderDrawer request={request} />
   </>
 }

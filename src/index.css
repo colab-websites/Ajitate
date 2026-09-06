@@ -488,3 +488,50 @@ textarea.order-input { min-height: 90px; resize: vertical; }
 .pin-result a { color: #ff9c8e; }
 .pin-result button { justify-self: start; text-decoration: underline; }
 .pin-result small { color: #ffffff80; line-height: 1.7; }
+/* Brand crossfade retains the original supplied PNG artwork. */
+.floating-logo { position: relative; width: 132px; height: 96px; transition: width .45s ease,height .45s ease,border-radius .45s ease,background .45s ease; }
+.floating-logo svg { position: absolute; width: 104px; height: 76px; transition: opacity .4s ease,transform .45s ease; }
+.floating-logo .brand-circle { width: 52px; height: 52px; opacity: 0; transform: scale(.6) rotate(-20deg); }
+.is-scrolled .floating-logo { width: 68px; height: 68px; border-radius: 50%; }
+.is-scrolled .brand-full { opacity: 0; transform: scale(.65); }
+.is-scrolled .brand-circle { opacity: 1; transform: scale(1) rotate(0); }
+.footer-brand { width: 140px; height: 96px; }
+.food-card { position: relative; }
+.product-details { text-align: left; }
+.product-details::after { content: ''; position: absolute; inset: 0; }
+.food-card-bottom button { position: relative; z-index: 1; }
+.drawer-product { display: flex; align-items: center; gap: 18px; border-bottom: 1px solid #ffffff20; }
+.drawer-product-info { flex: 1; text-align: left; padding: 20px 0; }
+.drawer-product-info p { font-size: 12px; line-height: 1.7; color: #ffffff9c; margin: 8px 0; }
+.drawer-product-info > span { font-size: 13px; color: #ffa195; }
+.quick-add { width: 42px; height: 42px; flex-shrink: 0; background: #ffffff12; border: 1px solid #ffffff30; border-radius: 50%; font-size: 24px; }
+.drawer-cart-bubble { margin: 12px 22px 22px; flex-shrink: 0; padding: 16px; border-radius: 99px; background: #e53935; font-size: 13px; box-shadow: 0 6px 24px #0006; }
+.review-glass-card.liquid-panel { background: linear-gradient(140deg,rgba(46,42,42,.97),rgba(18,18,18,.98)); }
+.social-preview a { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #ffffff40; border-radius: 50%; }
+.social-preview a svg { width: 22px; height: 22px; }
+@media(max-width:600px) { .floating-logo { width: 86px; height: 72px; } .floating-logo svg { width: 78px; height: 62px; } .is-scrolled .floating-logo { width: 58px; height: 58px; } .floating-logo .brand-circle { width: 44px; height: 44px; } }
+@media(prefers-reduced-motion:reduce) { .floating-logo,.floating-logo svg { transition: none; } }
+.reviews-section { position: relative; overflow: hidden; background: #0a0a0a; padding: 100px 0 72px; scroll-margin-top: 120px; }
+.reviews-backdrop { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-size: clamp(140px,24vw,340px); color: #ffffff03; pointer-events: none; }
+.reviews-heading { position: relative; text-align: center; padding-inline: 20px; }
+.reviews-heading h2 { font-family: var(--font-display); font-size: clamp(44px,6vw,78px); line-height: 1; }
+.reviews-heading h2 span { color: #e53935; }
+.reviews-heading .glass-action { display: inline-block; }
+.reviews-date { color: #ffffff65; font-size: 10px; margin-top: 14px; }
+.review-deck { --review-gap: 245px; position: relative; height: 402px; margin-top: 56px; isolation: isolate; }
+.review-position { position: absolute; left: 50%; top: 0; width: min(420px,calc(100vw - 48px)); height: 350px; transform-origin: center top; transition: transform .4s ease,filter .4s ease; pointer-events: none; }
+.review-position .review-glass-card { height: 100%; border-radius: 24px; padding: 30px; display: flex; flex-direction: column; }
+.review-position.is-active .review-glass-card { border-color: #e5393570; box-shadow: 0 16px 50px #0008,inset 0 1px 0 #ffffff30; }
+.review-stars { color: #e53935; font-size: 18px; letter-spacing: 3px; }
+.review-glass-card blockquote { color: #ffffffe0; font-size: 16px; line-height: 1.8; margin-top: 24px; }
+.review-author { display: flex; gap: 12px; align-items: center; margin-top: auto; padding-top: 20px; border-top: 1px solid #ffffff14; }
+.review-author > span { border-radius: 50%; background: #e5393520; color: #ff8172; width: 40px; height: 40px; display: grid; place-items: center; font-size: 12px; flex-shrink: 0; }
+.review-author strong { font-size: 12px; display: block; }
+.review-author small { font-size: 10px; color: #ffffff80; }
+.review-controls { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.review-controls button { width: 44px; height: 44px; border: 1px solid #ffffff25; border-radius: 50%; background: #ffffff08; }
+.review-controls .review-dot { width: 9px; height: 9px; padding: 0; }
+.review-controls .review-dot[aria-pressed=true] { width: 26px; border-radius: 99px; background: #e53935; }
+.review-counter { text-align: center; font-size: 11px; color: #ffffff70; margin-top: 18px; }
+@media(max-width:600px) { .review-deck { --review-gap: 105px; } .review-position .review-glass-card { padding: 25px; } .review-glass-card blockquote { font-size: 14px; } }
+@media(prefers-reduced-motion:reduce) { .review-position { transition: none; } }

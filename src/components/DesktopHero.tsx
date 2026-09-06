@@ -1,3 +1,4 @@
+import { SOCIALS } from '../data/socials'
 import { useRef, useState } from 'react'
 import { useStageScale } from '../hooks/useStageScale'
 import { useHeroTimeline } from '../hooks/useHeroTimeline'
@@ -190,11 +191,7 @@ function IntroParagraph() {
 }
 
 function SocialRail() {
-  const icons = [
-    { Icon: InstagramIcon, x: 110, name: 'Instagram' },
-    { Icon: FacebookIcon, x: 190, name: 'Facebook' },
-    { Icon: YoutubeIcon, x: 270, name: 'YouTube' },
-  ]
+  const icons = SOCIALS.map((social,i)=>({...social,x:110+i*80}))
 
   return (
     <div
@@ -206,11 +203,11 @@ function SocialRail() {
         height: 'calc(201px * var(--hero-scale))',
       }}
     >
-      {icons.map(({ Icon, x, name }, i) => (
+      {icons.map(({ Icon, x, name, href }, i) => (
         <a
           key={i}
-          href="#redes"
-          aria-label={`${name}: información de redes oficiales`}
+          href={href} target="_blank" rel="noreferrer"
+          aria-label={name}
           data-anim
           data-social-icon
           data-from-x={x}

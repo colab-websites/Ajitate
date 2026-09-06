@@ -60,3 +60,17 @@ Public sources checked September 6, 2026:
 - Nicole Cajamarca's review on that Google listing matches the existing review text. Other four reviews were not independently confirmed; the section remains marked source pending rather than claiming all are verified.
 
 Validation: production build and menu tests; browser checkout with dummy data, optional map selection, free extras in $3.50 summary, no coordinates in copied text; review scroll moved page from 7016 to 7373px while pointer was over the card. No order submitted.
+
+## Logo, checkout and review update — September 6
+
+- Used user-supplied AJITATE LOGO 2.png and AJITATE LOGO 4.png unchanged in public/brand. Inline SVG viewBoxes remove transparent canvas margins at display time. Full logo crossfades/scales to a circular red-flame badge on scroll; footer uses full flame-and-wordmark logo. Reduced-motion preference skips transitions.
+- Quick-add buttons add one plain item without opening the item editor. Clicking the product opens options. Drawer descriptions appear below names, and its bottom cart bubble stays available during browsing.
+- Phone formatting supports local Ecuador and +593 forms. Formats on blur to preserve easy editing. Telephone link destinations retain machine-readable international numbers.
+- Straw choice appears only with a beverage category or combo; removing the last beverage clears that choice. Napkins remain optional/free.
+- Opening the map requests browser location permission and, on success, centers and places an adjustable pin. Manual picking works after denial/unavailable location. No automatic geolocation on page load and no coordinate forwarding.
+- Social links now share one source in src/data/socials.ts: Instagram, TikTok linked by official Instagram, and Facebook supplied directly by the user: https://www.facebook.com/profile.php?id=61560746246876 . Facebook web-fetch was unavailable; link provenance is the user.
+- Removed requested hours/source-pending notices from customer UI; source history stays in this document.
+- Replaced unverified review entries with three actual original-Spanish Google excerpts: Nicole Cajamarca, Foxlider1, Diego Ortega TECNASA. Google listing read on September 6 shows 4.6/67 reviews; display includes consultation month and link. Excerpts omit stale relative dates and unsupported payment-policy implications. These are a selection, not all reviews or a live Google integration.
+- Review cards use a sufficiently opaque gradient backing to prevent text bleed while retaining glass highlights, raised center and softened lower neighbors. All three share equal layout dimensions; inactive content is hidden from accessibility tree.
+
+Validation: production build and all five tests pass. Browser quick-add retained browse view and updated cart bubble; beverage toggled straw visibility. Phone screenshot confirmed (099) 123-4567 with dummy local data. Location-unavailable fallback exercised; actual GPS success requires browser/device location permission. Desktop and narrow mobile review screenshots checked; narrow viewport had no horizontal overflow. No orders, payments, or personal details transmitted to restaurant. Authentic individual dish photos remain a recommended next input; no new per-dish AI images added in this update.
