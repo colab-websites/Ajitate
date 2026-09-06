@@ -28,19 +28,22 @@ No reset or force push is needed. If changes are eventually published, a normal 
 
 ## Changes
 
-- Kept Ajitate branding and Sergio's exact original Cloudinary hero video.
-- Replaced the fixed scaled hero layout with a responsive layout; added video pause/play and reduced-motion handling.
-- Connected navigation to sections and added a mobile navigation menu.
-- Added menu category filters and dish-specific inquiry dialogs.
-- Made unknown menu, prices, photos, promotions, hours, address and ordering information explicit placeholders.
-- Replaced unverified history/statistics and testimonials in the rendered draft with general copy and placeholders. Original components remain in src/components for review and restoration.
-- Added location/contact placeholders, footer, accessible focus states and Spanish page metadata.
-- Did not use the generated hero image; the user requested retaining the video.
+This revision restores Sergio's original visual direction after the first draft was rejected.
+
+- Restored the original full-screen video hero, animated distressed headline, spinning badge, asymmetric specialty cards, expanded story and review carousel from Sergio's latest saved source.
+- Kept the same original Cloudinary video URL. No generated image is used.
+- Changed stage scaling from fill/crop to fit with safe margins. The full-screen hero remains; headline, badge and all three social icons stay inside the window.
+- Preserved the floating liquid-glass navigation, added section links and active-section feedback, and gave the logo a dark glass backing after scrolling.
+- Connected order buttons to a dish-specific availability dialog. Ordering remains unavailable until the official channel is supplied.
+- Retained missing-image placeholders, labeled sample menu content and prices, and labeled existing reviews as source-unconfirmed.
+- Added location, hours, ordering and social placeholders in matching dark glass panels, plus a footer.
+- Mobile uses the original video/card visual language with a working glass navigation dropdown. Removed inactive template search/avatar/product controls.
+- Added keyboard focus visibility, touch visibility for card actions, labeled carousel controls, Spanish metadata and safe mobile review-card sizing.
 
 ## Required before launch
 
 - Confirm menu items, ingredients, prices and availability.
-- Supply approved food/team photos and restaurant story.
+- Supply approved food/team photos and confirm the existing restaurant history and statistics.
 - Confirm WhatsApp/order channel and service details.
 - Supply exact address, map link and hours.
 - Supply official social links and source links for any approved reviews.
@@ -49,12 +52,14 @@ Order buttons currently explain that ordering is not yet available. They do not 
 
 ## Verification
 
-- Production build and TypeScript checks passed.
-- Browser checked desktop and phone layouts with no horizontal document overflow.
+- Production build, TypeScript and whitespace checks passed.
+- Desktop hero matched viewport height. Original video loaded and played.
+- Social-icon bounds stayed entirely inside both desktop and narrower laptop viewports.
+- Floating header fit inside the narrower laptop width.
+- Scrolling applied the dark glass logo backing; visually checked it over the story section.
 - All section anchor targets exist.
-- Tested menu navigation, category filtering, dish-specific inquiry dialog, Escape dismissal, mobile menu opening/closing, location navigation and header ordering dialog.
-- Original video loaded and played; pause/resume worked.
-- Corrected sticky header scrolling and verified location target remains below header on phone.
+- Tested desktop navigation, header ordering dialog, mobile navigation opening/closing, menu destination and dish-specific ordering dialog.
+- Visually reviewed the restored desktop hero and new matching glass contact panels.
 
 ## Sharing with Sergio
 

@@ -12,7 +12,8 @@ export function useStageScale() {
     if (!el) return
     const vw = el.clientWidth
     const vh = el.clientHeight
-    setScale(Math.max(vw / STAGE_W, vh / STAGE_H))
+    // Fit the entire composition inside the viewport instead of cropping its edges.
+    setScale(Math.min((vw - 48) / STAGE_W, (vh - 24) / STAGE_H))
   }, [])
 
   useEffect(() => {

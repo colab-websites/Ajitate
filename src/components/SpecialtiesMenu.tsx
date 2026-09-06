@@ -56,7 +56,7 @@ const ESPECIALIDADES = [
   },
 ]
 
-function SpecCard({ item, index }: { item: typeof ESPECIALIDADES[0]; index: number }) {
+function SpecCard({ item, index, onOrder }: { item: typeof ESPECIALIDADES[0]; index: number; onOrder: (name: string) => void }) {
   const delay = index * 0.1
 
   return (
@@ -73,7 +73,7 @@ function SpecCard({ item, index }: { item: typeof ESPECIALIDADES[0]; index: numb
         <img src={item.img} alt={item.name} className="spec-img" />
       ) : (
         <div className="spec-img flex items-center justify-center" style={{ background: item.bg }}>
-          <BurgerGlyph className="w-24 h-24 opacity-20" />
+          <div className="flex flex-col items-center gap-3"><BurgerGlyph className="w-24 h-24 opacity-20" /><span className="text-white/40 text-xs">Foto oficial próximamente</span></div>
         </div>
       )}
 
@@ -119,12 +119,14 @@ function SpecCard({ item, index }: { item: typeof ESPECIALIDADES[0]; index: numb
         {/* Price + Button row */}
         <div className="flex items-center justify-between">
           <span
-            className="spec-price text-xl font-bold"
+            className="spec-price text-sm font-bold"
             style={{ color: item.accent }}
           >
-            {item.price}
+            Precio por confirmar
           </span>
           <button
+            onClick={() => onOrder(item.name)}
+            aria-label={`Consultar ${item.name}`}
             className="spec-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors"
             style={{
               background: 'rgba(255,255,255,0.15)',
@@ -141,9 +143,9 @@ function SpecCard({ item, index }: { item: typeof ESPECIALIDADES[0]; index: numb
   )
 }
 
-export function SpecialtiesMenu() {
+export function SpecialtiesMenu({ onOrder }: { onOrder: (name: string) => void }) {
   return (
-    <section className="relative bg-black py-20 px-6 lg:px-16">
+    <section id="especiales" className="relative bg-black py-20 px-6 lg:px-16">
       {/* Decorative background glow */}
       <div
         className="absolute inset-0 pointer-events-none opacity-30"
@@ -170,13 +172,14 @@ export function SpecialtiesMenu() {
           >
             ESPECIALES
           </h2>
+          <p className="mt-5 text-white/50 text-xs leading-relaxed">Menú de muestra · platos, ingredientes, fotografías y precios por confirmar.</p>
           <div className="mt-4 h-[3px] w-16 bg-[#e53935] rounded-full" />
         </div>
 
         {/* Asymmetric grid */}
         <div className="spec-grid">
           {ESPECIALIDADES.map((item, i) => (
-            <SpecCard key={item.name} item={item} index={i} />
+            <SpecCard key={item.name} item={item} index={i} onOrder={onOrder} />
           ))}
         </div>
       </div>

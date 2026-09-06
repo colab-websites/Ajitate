@@ -205,7 +205,7 @@ export function TestimonialsSection() {
             }}
           >
             <span className="text-xs font-semibold uppercase tracking-[0.35em]" style={{ color: '#e53935' }}>
-              Reseñas reales
+              Reseñas · fuente por confirmar
             </span>
           </div>
           <h2
@@ -279,6 +279,7 @@ export function TestimonialsSection() {
                   className="absolute"
                   style={{
                     width: CARD_W,
+                    maxWidth: 'calc(100vw - 48px)',
                     ...style,
                     transformStyle: 'preserve-3d',
                     transition: 'transform 0.65s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease, z-index 0s',
@@ -431,6 +432,7 @@ export function TestimonialsSection() {
         >
           {/* Prev */}
           <button
+            aria-label="Reseña anterior"
             onClick={goPrev}
             className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
             style={{
@@ -459,6 +461,8 @@ export function TestimonialsSection() {
             {REVIEWS.map((_, i) => (
               <button
                 key={i}
+                aria-label={`Ver reseña ${i + 1}`}
+                aria-pressed={i === active}
                 onClick={() => setActive(i)}
                 className="transition-all duration-500"
                 style={{
@@ -475,6 +479,7 @@ export function TestimonialsSection() {
 
           {/* Next */}
           <button
+            aria-label="Siguiente reseña"
             onClick={goNext}
             className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
             style={{

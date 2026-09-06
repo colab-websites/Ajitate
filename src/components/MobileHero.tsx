@@ -32,46 +32,9 @@ const PRODUCTS = [
   },
 ]
 
-export function MobileHero() {
+export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-black pb-12 text-white">
-      {/* Sticky navbar */}
-      <nav className="sticky top-0 z-20 bg-black/90 backdrop-blur-sm px-4 py-3 fade-up" style={{ animationDelay: '0s' }}>
-        <div className="flex items-center justify-between">
-          <img src={LOGO_URL} alt="Ajitate" className="h-27 w-auto" />
-          <div className="flex items-center gap-2">
-            <button className="size-9 rounded-full bg-white/15 flex items-center justify-center text-white">
-              <SearchIcon className="w-4 h-4" />
-            </button>
-            <button className="relative size-9 rounded-full bg-white flex items-center justify-center text-black">
-              <CartIcon className="w-4 h-4" />
-              <span className="absolute -right-0.5 -top-0.5 size-[9px] rounded-full bg-red-500" />
-            </button>
-            <img
-              src={`${ASSET_BASE}/avatar.png`}
-              alt="avatar"
-              className="size-9 rounded-full border-2 border-white object-cover"
-            />
-          </div>
-        </div>
-      </nav>
-
-      {/* Nav pills */}
-      <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 pb-3 pt-1 fade-up" style={{ animationDelay: '0.05s' }}>
-        {NAV_ITEMS.map((item, i) => (
-          <button
-            key={item}
-            className={`shrink-0 rounded-full px-5 py-2.5 text-sm transition-colors ${
-              i === 0
-                ? 'bg-[#e53935] font-semibold text-white'
-                : 'bg-white/10 text-white'
-            }`}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-
+    <div id="inicio" className="original-mobile-hero relative min-h-screen overflow-x-hidden bg-black pb-12 text-white">
       {/* Video banner */}
       <div className="mx-4 mt-2 h-[46vh] min-h-[300px] rounded-[28px] overflow-hidden relative fade-up" style={{ animationDelay: '0.1s' }}>
         <video
@@ -129,60 +92,12 @@ export function MobileHero() {
 
       {/* CTA row */}
       <div className="px-4 mt-5 flex items-center gap-3 fade-up" style={{ animationDelay: '0.30s' }}>
-        <button className="flex-1 h-12 rounded-full bg-[#e53935] text-white font-semibold text-base">
+        <a href="#menu" className="flex items-center justify-center flex-1 h-12 rounded-full bg-[#e53935] text-white font-semibold text-base">
           Ver Menú
-        </button>
-        <button className="size-12 rounded-full bg-white flex items-center justify-center text-black shrink-0">
+        </a>
+        <button aria-label="Información de pedidos" onClick={() => onOrder()} className="size-12 rounded-full bg-white flex items-center justify-center text-black shrink-0">
           <CartIcon className="w-5 h-5" />
         </button>
-      </div>
-
-      {/* Product rail */}
-      <div className="mt-8 px-4 fade-up" style={{ animationDelay: '0.32s' }}>
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold uppercase tracking-[0.15em] text-white/70">Menú</span>
-          <div className="flex items-center gap-2">
-            <button className="size-8 rounded-full bg-white/15 flex items-center justify-center text-white">
-              <CaretLeft className="w-4 h-4" />
-            </button>
-            <button className="size-8 rounded-full bg-white/15 flex items-center justify-center text-white">
-              <CaretRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div className="no-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2">
-          {PRODUCTS.map((p, i) => (
-            <div
-              key={i}
-              className="shrink-0 snap-start rounded-[24px] bg-white/10 backdrop-blur-sm p-1 pb-5"
-              style={{ width: '62vw' }}
-            >
-              <div
-                className="relative h-[110px] rounded-[16px] overflow-hidden"
-                style={{ background: p.bg }}
-              >
-                <img
-                  src={p.img}
-                  alt={p.name}
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[140px] object-contain"
-                  style={{ transform: 'translate(-50%, -22%)' }}
-                />
-              </div>
-              <div className="px-3 pt-3">
-                <h3 className="text-sm font-semibold text-white">{p.name}</h3>
-                {p.desc && (
-                  <p className="text-xs text-white/50 mt-1 leading-relaxed">{p.desc}</p>
-                )}
-                {p.price && (
-                  <p className="text-sm font-semibold mt-1" style={{ color: '#e53935' }}>
-                    {p.price}
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Footer row */}
@@ -191,16 +106,17 @@ export function MobileHero() {
           {[InstagramIcon, FacebookIcon, YoutubeIcon].map((Icon, i) => (
             <a
               key={i}
-              href="#"
+              href="#redes"
+              aria-label={`${['Instagram', 'Facebook', 'YouTube'][i]}: información de redes oficiales`}
               className="size-11 rounded-full border border-white/70 flex items-center justify-center text-white transition-colors hover:bg-white hover:text-black"
             >
               <Icon className="w-5 h-5" />
             </a>
           ))}
         </div>
-        <button className="size-11 rounded-full border border-white/70 flex items-center justify-center text-white transition-colors hover:bg-white hover:text-black">
+        <a href="#menu" aria-label="Explorar menú" className="size-11 rounded-full border border-white/70 flex items-center justify-center text-white transition-colors hover:bg-white hover:text-black">
           <ArrowDown className="w-5 h-5" />
-        </button>
+        </a>
       </div>
     </div>
   )

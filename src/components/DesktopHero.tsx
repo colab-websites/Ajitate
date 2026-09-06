@@ -152,7 +152,7 @@ function Badge() {
 
 function IntroParagraph() {
   const text =
-    'Ajitate es el lugar perfecto en Cuenca donde la familia, lasrisas y el sabor tex-mex se encuentran. Fundado por Daniel Bojorque, te esperamos con hamburguesas, tacos, burritos, costillas y papas BBQ que te van a volar la cabeza.'
+    'Ajitate es el lugar perfecto en Cuenca donde la familia, las risas y el sabor tex-mex se encuentran. Fundado por Daniel Bojorque, te esperamos con hamburguesas, tacos, burritos, costillas y papas BBQ que te van a volar la cabeza.'
   const words = text.split(' ')
 
   return (
@@ -191,9 +191,9 @@ function IntroParagraph() {
 
 function SocialRail() {
   const icons = [
-    { Icon: InstagramIcon, x: 110 },
-    { Icon: FacebookIcon, x: 190 },
-    { Icon: YoutubeIcon, x: 270 },
+    { Icon: InstagramIcon, x: 110, name: 'Instagram' },
+    { Icon: FacebookIcon, x: 190, name: 'Facebook' },
+    { Icon: YoutubeIcon, x: 270, name: 'YouTube' },
   ]
 
   return (
@@ -206,10 +206,11 @@ function SocialRail() {
         height: 201,
       }}
     >
-      {icons.map(({ Icon, x }, i) => (
+      {icons.map(({ Icon, x, name }, i) => (
         <a
           key={i}
-          href="#"
+          href="#redes"
+          aria-label={`${name}: información de redes oficiales`}
           data-anim
           data-social-icon
           data-from-x={x}
@@ -238,7 +239,8 @@ export function DesktopHero() {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full h-screen" style={{ background: '#000' }}>
+    <div id="inicio" ref={containerRef} className="original-desktop-hero relative w-full h-screen overflow-hidden" style={{ background: '#000' }}>
+      <h1 className="sr-only">SABOR QUE AJITA</h1>
       <div
         ref={scopeRef}
         style={{
@@ -263,10 +265,10 @@ export function DesktopHero() {
           onLoadedData={handleVideoReady}
           style={{
             position: 'absolute',
-            left: 332.72,
-            top: -12.37,
-            width: 1483.97,
-            height: 834.73,
+            left: 370,
+            top: 0,
+            width: 1400,
+            height: 810,
             objectFit: 'cover',
             maxWidth: 'none',
           }}
