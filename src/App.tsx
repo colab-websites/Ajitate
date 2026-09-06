@@ -40,7 +40,7 @@ export default function App() {
         </div>
       </section>
     </main>
-    <footer className="original-footer expanded-footer"><div className="footer-links"><a href="#menu">Menú</a><a href="#especiales">Especiales</a><a href="#nosotros">Nuestra historia</a><a href="#ubicacion">Visítanos</a></div><a className="footer-logo-link" href="#inicio" aria-label="Ajitate, inicio"><BrandLogo className="footer-brand"/></a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><div className="footer-bottom"><span>Hecho para compartir una buena mesa.</span><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></div></footer>
+    <footer className="original-footer expanded-footer"><a className="footer-logo-link" href="#inicio" aria-label="Ajitate, inicio"><BrandLogo className="footer-brand"/></a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><div className="footer-links"><a href="#menu">Menú</a><a href="#especiales">Especiales</a><a href="#nosotros">Nuestra historia</a><a href="#ubicacion">Visítanos</a></div><div className="footer-bottom"><span>Hecho para compartir una buena mesa.</span><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></div></footer>
     <OrderDrawer request={request} />
   </>
 }

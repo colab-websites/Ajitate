@@ -25,6 +25,8 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
   const [straws,setStraws]=useState(false)
   const [copied,setCopied]=useState(false)
   const [notice,setNotice]=useState('')
+  useEffect(()=>{setNotice('')},[step])
+  useEffect(()=>{if(!notice)return;const timer=window.setTimeout(()=>setNotice(''),2200);return()=>window.clearTimeout(timer)},[notice])
   const item=MENU.find(i=>i.id===selected)!
   const count=cart.reduce((s,l)=>s+l.quantity,0)
   const total=subtotal(cart)
@@ -49,7 +51,7 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
       const existing=previous.find(l=>lineKey(l)===lineKey(next))
       return existing?previous.map(l=>lineKey(l)===lineKey(next)?{...l,quantity:Math.min(99,l.quantity+quantity)}:l):[...previous,next]
     })
-    setNotice(`${item.name} agregado`);setStep('cart')
+    setNotice('');setStep('cart')
   }
   const change=(key:string,delta:number)=>setCart(previous=>previous.map(l=>lineKey(l)===key?{...l,quantity:Math.min(99,l.quantity+delta)}:l).filter(l=>l.quantity>0))
   const summary=[
@@ -69,13 +71,13 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
     <dialog ref={dialog} className="order-drawer" aria-labelledby="drawer-title" onClick={e=>{if(e.target===e.currentTarget)close()}}>
       <div className="drawer-shell">
         <header className="drawer-header"><div><p className="section-kicker">PEDIDOS AJITATE</p><h2 id="drawer-title">{heading}</h2></div><button className="drawer-close" aria-label="Cerrar pedido" onClick={close}>×</button></header>
-        <nav className="drawer-steps" aria-label="Pasos del pedido"><button onClick={()=>setStep('browse')} aria-current={step==='browse'||step==='item'?'step':undefined}>1 · Menú</button><button onClick={()=>setStep('cart')} aria-current={step==='cart'?'step':undefined}>2 · Pedido ({count})</button><span aria-current={step==='details'||step==='summary'?'step':undefined}>3 · Confirmar</span></nav>
-        <div className="drawer-body">
-          {notice&&cart.length>0&&<p className="order-notice" role="status">{notice}</p>}
+        <nav className="drawer-steps" aria-label="Pasos del pedido"><button onClick={()=>setStep('browse')} aria-current={step==='browse'||step==='item'?'step':undefined}>1 · Menú</button><button disabled={!count} onClick={()=>setStep('cart')} aria-current={step==='cart'?'step':undefined}>2 · Pedido ({count})</button><span aria-current={step==='details'||step==='summary'?'step':undefined}>3 · Confirmar</span></nav>
+        <div className={`drawer-body ${count>0&&['browse','item'].includes(step)?'has-floating-cart':''}`}>
+          {notice&&(step==='browse'||step==='summary')&&<p className="order-notice" role="status">{notice}</p>}
           {step==='browse'&&<>
             <input className="order-input" type="search" aria-label="Buscar producto para pedir" placeholder="Hamburguesa, tacos, bebida…" value={search} onChange={e=>setSearch(e.target.value)}/>
             <div className="drawer-categories">{['Todo',...new Set(MENU.map(i=>i.category))].map(c=><button key={c} aria-pressed={category===c} onClick={()=>setCategory(c)}>{c}</button>)}</div>
-            <div className="drawer-products">{MENU.filter(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(i=><article key={i.id} className="drawer-product"><button className="drawer-product-info" onClick={()=>choose(i.id)}><MenuPhoto item={i} compact/><small>{i.category}</small><strong>{i.name}</strong><p>{i.description}</p><span>{money(i.price)}</span></button><button className="quick-add" aria-label={`Agregar ${i.name}`} onClick={()=>quickAdd(i.id)}>+</button></article>)}</div>
+            <div className="drawer-products">{MENU.filter(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(i=><article key={i.id} className="drawer-product"><button className="drawer-product-info" onClick={()=>choose(i.id)}><MenuPhoto item={i} compact/><small>{i.category}</small><strong>{i.name}</strong><p>{i.description}</p><span>{money(i.price)}</span></button>{cart.some(l=>l.id===i.id&&!l.side)?<div className="quantity-control browse-quantity"><button aria-label={`Reducir ${i.name}`} onClick={()=>change(lineKey({id:i.id,side:''}),-1)}>−</button><output aria-live="polite">{cart.find(l=>l.id===i.id&&!l.side)!.quantity}</output><button aria-label={`Agregar ${i.name}`} disabled={cart.find(l=>l.id===i.id&&!l.side)!.quantity>=99} onClick={()=>quickAdd(i.id)}>+</button></div>:<button className="quick-add" aria-label={`Agregar ${i.name}`} onClick={()=>quickAdd(i.id)}>+</button>}</article>)}</div>
             {!MENU.some(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))&&<p>No encontramos ese producto.</p>}
           </>}
           {step==='item'&&<div className="item-options"><MenuPhoto item={item}/><span className="food-category">{item.category}</span><p>{item.description}</p><strong className="item-price">{money(item.price)}</strong>
@@ -84,12 +86,12 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
             <button className="order-primary" onClick={add}>Agregar al pedido · {money((item.price+(side&&item.combo?199:0))*quantity)}</button>
           </div>}
           {step==='cart'&&<>{!cart.length?<div className="empty-cart"><h3>Tu próximo antojo te espera.</h3><p>Agrega algo del menú para empezar.</p><button className="order-primary" onClick={()=>setStep('browse')}>Explorar menú</button></div>:<>
-            {cart.map(line=>{const product=MENU.find(i=>i.id===line.id)!;return <article key={lineKey(line)} className="cart-line"><div><h3>{product.name}</h3>{line.side&&<p>Combo: {line.side} + bebida</p>}<strong>{money(unitPrice(line)*line.quantity)}</strong></div><div className="quantity-control"><button aria-label={`Reducir ${product.name}${line.side?' combo':''}`} onClick={()=>change(lineKey(line),-1)}>−</button><output>{line.quantity}</output><button aria-label={`Aumentar ${product.name}${line.side?' combo':''}`} disabled={line.quantity>=99} onClick={()=>change(lineKey(line),1)}>+</button></div><button className="remove-line" onClick={()=>setCart(c=>c.filter(l=>lineKey(l)!==lineKey(line)))} aria-label={`Eliminar ${product.name}${line.side?' combo':''}`}>Eliminar</button></article>})}
+            {cart.map(line=>{const product=MENU.find(i=>i.id===line.id)!;return <article key={lineKey(line)} className="cart-line"><MenuPhoto item={product} compact/><div className="cart-line-copy"><h3>{product.name}</h3><p>{product.description}</p>{line.side&&<p>Combo: {line.side} + bebida</p>}<strong>{money(unitPrice(line)*line.quantity)}</strong></div><div className="quantity-control"><button aria-label={`Reducir ${product.name}${line.side?' combo':''}`} onClick={()=>change(lineKey(line),-1)}>−</button><output>{line.quantity}</output><button aria-label={`Aumentar ${product.name}${line.side?' combo':''}`} disabled={line.quantity>=99} onClick={()=>change(lineKey(line),1)}>+</button></div><button className="remove-line" onClick={()=>setCart(c=>c.filter(l=>lineKey(l)!==lineKey(line)))} aria-label={`Eliminar ${product.name}${line.side?' combo':''}`}>Eliminar</button></article>})}
             <button className="glass-action" onClick={()=>setStep('browse')}>+ Agregar más productos</button><div className="cart-total"><span>Subtotal de productos</span><strong>{money(total)}</strong></div><p className="order-hint">La entrega no está incluida. El restaurante confirmará disponibilidad y total final. No se realiza ningún cobro aquí.</p><button className="order-primary" onClick={()=>setStep('details')}>Continuar →</button>
           </>}</>}
           {step==='details'&&<form onSubmit={e=>{e.preventDefault();setCopied(false);setStep('summary')}}>
             <label className="form-label">Tu nombre<input className="order-input" required maxLength={80} autoComplete="name" value={name} onChange={e=>setName(e.target.value)}/></label>
-            <label className="form-label">Teléfono<input className="order-input" required type="tel" inputMode="tel" minLength={10} maxLength={20} autoComplete="tel" value={phone} placeholder="(098) 304-7406" onChange={e=>setPhone(e.target.value)} onBlur={()=>setPhone(formatPhone(phone))}/></label>
+            <label className="form-label">Teléfono<input className="order-input" required type="tel" inputMode="tel" minLength={10} maxLength={20} autoComplete="tel" value={phone} placeholder="Tu número de celular" onChange={e=>setPhone(e.target.value)} onBlur={()=>setPhone(formatPhone(phone))}/></label>
             <fieldset><legend>¿Cómo lo prefieres?</legend><label className="option-choice"><input type="radio" name="delivery" checked={method==='delivery'} onChange={()=>setMethod('delivery')}/>A domicilio</label><label className="option-choice"><input type="radio" name="delivery" checked={method==='pickup'} onChange={()=>setMethod('pickup')}/>Retiro en el local · por confirmar</label></fieldset>
             {method==='delivery'&&<label className="form-label">Dirección y referencia<textarea className="order-input" required maxLength={400} autoComplete="street-address" value={address} onChange={e=>setAddress(e.target.value)}/></label>}
             {method==='delivery'&&<DeliveryPin pin={pin} onChange={setPin}/>}
@@ -98,7 +100,7 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
           </form>}
           {step==='summary'&&<><p className="order-hint">Revisa tu pedido antes de compartirlo. Todavía no ha sido enviado ni confirmado.</p><textarea className="order-summary" aria-label="Resumen del pedido" readOnly value={summary}/><button className="order-primary" onClick={copy}>{copied?'Resumen copiado ✓':'Copiar resumen del pedido'}</button><p role="status" className="order-hint">{copied?'Puedes pegar el resumen en tu conversación con el restaurante.':''}</p><a className="order-call" href="tel:+593983047406">Llamar al (098) 304-7406 ↗</a><p className="order-hint">Número de pedidos publicado en el menú. Confirma el total y el pago directamente con Ajitate.</p><button className="glass-action" onClick={()=>setStep('details')}>Editar datos</button></>}
         </div>
-        {count>0&&['browse','item'].includes(step)&&<button className="drawer-cart-bubble" onClick={()=>setStep('cart')}>Ver carrito · {count} productos · {money(total)} →</button>}
+        {count>0&&['browse','item'].includes(step)&&<div className="drawer-cart-float"><button className="drawer-cart-bubble" onClick={()=>setStep('cart')}>Ver carrito · {count} {count===1?'producto':'productos'} · {money(total)} →</button></div>}
       </div>
     </dialog>
   </>

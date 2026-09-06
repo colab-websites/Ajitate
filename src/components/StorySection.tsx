@@ -30,6 +30,7 @@ export function StorySection() {
   }, [])
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!window.matchMedia('(min-width: 1024px) and (pointer: fine)').matches) return
     const r = (e.currentTarget as HTMLElement).getBoundingClientRect()
     setMousePos({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height })
   }, [])
@@ -38,7 +39,7 @@ export function StorySection() {
     <section
       ref={sectionRef}
       onMouseMove={onMouseMove}
-      className="relative overflow-hidden"
+      className="story-section relative overflow-hidden"
       style={{ background: '#0a0a0a' }}
     >
       {/* ═══ AMBIENT GLOW ═══ */}
@@ -76,14 +77,14 @@ export function StorySection() {
       ))}
 
       {/* ═══ MAIN CONTENT ═══ */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 py-24 lg:py-32">
+      <div className="story-content relative z-10 max-w-7xl mx-auto px-6 lg:px-16 py-24 lg:py-32">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-0 items-start">
 
           {/* ── LEFT: Image column ── */}
           <div className="w-full lg:w-[42%] relative">
             {/* Diagonal clip reveal */}
             <div
-              className="relative rounded-[24px] overflow-hidden"
+              className="story-photo relative rounded-[24px] overflow-hidden"
               style={{
                 aspectRatio: '3/4',
                 clipPath: revealed
@@ -131,7 +132,7 @@ export function StorySection() {
 
             {/* Floating year tag */}
             <div
-              className="absolute -bottom-5 -right-3 lg:right-[-30px] z-20"
+              className="story-founded absolute -bottom-5 -right-3 lg:right-[-30px] z-20"
               style={{
                 opacity: revealed ? 1 : 0,
                 transform: revealed ? 'translateY(0) rotate(0deg)' : 'translateY(20px) rotate(3deg)',
