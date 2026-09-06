@@ -610,3 +610,28 @@ textarea.order-input { min-height: 90px; resize: vertical; }
  .story-section h2 { font-size: clamp(2.8rem,10vw,4.5rem) !important; }
  .story-section h2 span:last-child { font-size: .7em !important; color: #ffffffb3 !important; letter-spacing: .02em !important; }
 }
+
+/* Anchors land at the section edge; internal spacing clears the floating header. */
+html { scroll-padding-top: 0; }
+.restaurant-menu { padding-top: 132px; }
+.story-section { min-height: 100svh; display: flex; align-items: center; }
+.story-content { width: 100%; padding-top: 132px; padding-bottom: 64px; }
+.reviews-section { min-height: 100svh; scroll-margin-top: 0; padding-top: 132px; display: flex; flex-direction: column; justify-content: center; }
+.contact-section { min-height: 100svh; padding-top: 132px; display: flex; align-items: center; }
+.contact-inner { width: 100%; }
+@media(min-width:1024px) {
+ .story-content > div { align-items: center; }
+ .story-section .story-photo { aspect-ratio: auto !important; height: clamp(380px, calc(100svh - 220px), 620px); }
+}
+@media(max-width:900px) {
+ .restaurant-menu,.reviews-section,.contact-section { padding-top: 112px; }
+ .story-content { padding-top: 112px; padding-bottom: 56px; }
+}
+@media(min-width:1024px) and (max-height:850px) {
+ .story-content { padding-top: 116px; padding-bottom: 36px; }
+ .story-section h2 { font-size: clamp(44px,4.5vw,62px) !important; }
+ .story-section .my-8 { margin-block: 20px; }
+ .story-section .mt-8 { margin-top: 18px; }
+ .story-section .mt-10 { margin-top: 22px; }
+ .story-section p.max-w-md { font-size: 14px !important; }
+}
