@@ -106,7 +106,7 @@ export function TestimonialsSection() {
     const isVisible = absOffset <= 2
 
     return {
-      transform: `translateX(${offset * CARD_GAP}px) scale(${isActive ? 1 : 0.88 - absOffset * 0.04})`,
+      transform: `translateX(${offset * CARD_GAP}px) scale(1)`,
       zIndex: isActive ? 20 : 10 - absOffset,
       opacity: isVisible ? 1 : 0,
                     pointerEvents: (isActive ? 'auto' : 'none') as 'auto' | 'none',
@@ -241,7 +241,7 @@ export function TestimonialsSection() {
           className="relative mx-auto"
           style={{
 
-            height: 380,
+            height: 410,
             maxWidth: `${CARD_W + CARD_GAP * 4}px`,
             opacity: revealed ? 1 : 0,
             transition: 'opacity 1s ease 0.4s',
@@ -261,6 +261,7 @@ export function TestimonialsSection() {
                   className="absolute"
                   style={{
                     width: CARD_W,
+                    height: 390,
                     maxWidth: 'calc(100vw - 48px)',
                     ...style,
 
@@ -268,7 +269,7 @@ export function TestimonialsSection() {
                   }}
                 >
                   <div
-                    className="review-glass-card liquid-panel relative rounded-2xl overflow-hidden h-full"
+                    className="review-glass-card liquid-panel relative rounded-2xl h-full"
                     style={{ padding: '2rem', borderColor: isActive ? 'rgba(229,57,53,0.4)' : 'rgba(255,255,255,0.17)' }}
                   >
                     {/* Floating quote mark */}

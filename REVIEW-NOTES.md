@@ -2,6 +2,8 @@
 
 Local preview: http://127.0.0.1:5173/Ajitate/
 
+Latest update: the supplied 47-option menu, illustrative category images, equal review-card dimensions and a right-side ordering drawer are implemented. See docs/MENU-AND-IMAGES.md for current source, checkout boundaries, image prompts and validation. Earlier checkpoints below describe previous iterations.
+
 This is a local review draft. Nothing has been pushed or published.
 
 ## Sergio's recovery point
@@ -26,7 +28,7 @@ git clone backups/Ajitate-sergio-2026-09-05.bundle ../Ajitate-recovered
 
 No reset or force push is needed. If changes are eventually published, a normal revert commit can roll them back while preserving history.
 
-## Changes
+## Earlier design checkpoints
 
 This revision restores Sergio's original visual direction after the first draft was rejected.
 
