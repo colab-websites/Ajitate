@@ -29,9 +29,9 @@ export default function App() {
           <h2>TE GUARDAMOS<br /><span>UN LUGAR</span></h2>
           <p className="contact-intro">La buena comida sabe mejor en buena compañía.</p>
           <div className="contact-grid">
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">↗</span><h3>Ubicación</h3><p>Av. Don Bosco, Cuenca<br />Local 1 · 3XMF+X8M</p><a className="contact-phone" href="https://maps.app.goo.gl/FTVdfzcjXtNxwSw76" target="_blank" rel="noreferrer">Cómo llegar · Local 1 ↗</a><small>Mapa enlazado por @ajitate.ec.</small></article>
+            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">↗</span><h3>Ubicación</h3><p>Av. Don Bosco, Cuenca<br />Frente a Sistemas de Escapes Falconi</p><a className="contact-phone" href="https://maps.app.goo.gl/FTVdfzcjXtNxwSw76" target="_blank" rel="noreferrer">Cómo llegar ↗</a></article>
             <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">◷</span><h3>Horarios</h3><p>Martes a sábado<br />12:00–15:00 · 18:00–22:00</p></article>
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">♨</span><h3>Pedidos</h3><p>Tu próximo antojo empieza aquí.</p><button className="glass-action" onClick={() => openOrder()}>Información de pedidos ↗</button><a className="contact-phone" href="tel:+593983047406">(098) 304-7406</a></article>
+            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">♨</span><h3>Pedidos</h3><p>Tu próximo antojo empieza aquí.</p><button className="glass-action" onClick={() => openOrder()}>Realiza tu pedido aquí →</button><a className="contact-call" href="tel:+593983047406"><span aria-hidden="true">☎</span><span><small>¿Prefieres llamar?</small><strong>(098) 304-7406</strong></span><span aria-hidden="true">↗</span></a></article>
           </div>
           <div id="redes" className="social-placeholder liquid-panel">
             <div><p className="section-kicker">SIGAMOS EN CONTACTO</p><h3>Más sabor, todos los días.</h3><a className="contact-phone" href="https://www.instagram.com/ajitate.ec/" target="_blank" rel="noreferrer">Instagram · @ajitate.ec ↗</a></div>
@@ -40,7 +40,7 @@ export default function App() {
         </div>
       </section>
     </main>
-    <footer className="original-footer"><a href="#inicio" aria-label="Ajitate, inicio"><BrandLogo className="footer-brand"/></a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></footer>
+    <footer className="original-footer expanded-footer"><div className="footer-links"><a href="#menu">Menú</a><a href="#especiales">Especiales</a><a href="#nosotros">Nuestra historia</a><a href="#ubicacion">Visítanos</a></div><a className="footer-logo-link" href="#inicio" aria-label="Ajitate, inicio"><BrandLogo className="footer-brand"/></a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><div className="footer-bottom"><span>Hecho para compartir una buena mesa.</span><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></div></footer>
     <OrderDrawer request={request} />
   </>
 }

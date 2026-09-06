@@ -74,3 +74,17 @@ Validation: production build and menu tests; browser checkout with dummy data, o
 - Review cards use a sufficiently opaque gradient backing to prevent text bleed while retaining glass highlights, raised center and softened lower neighbors. All three share equal layout dimensions; inactive content is hidden from accessibility tree.
 
 Validation: production build and all five tests pass. Browser quick-add retained browse view and updated cart bubble; beverage toggled straw visibility. Phone screenshot confirmed (099) 123-4567 with dummy local data. Location-unavailable fallback exercised; actual GPS success requires browser/device location permission. Desktop and narrow mobile review screenshots checked; narrow viewport had no horizontal overflow. No orders, payments, or personal details transmitted to restaurant. Authentic individual dish photos remain a recommended next input; no new per-dish AI images added in this update.
+
+## Full menu imagery and layout refinement — September 6
+
+- Generated one distinct illustrative image for each of the 47 menu entries with the built-in image tool. Files: public/images/menu/<menu-id>.jpg. The complete prompt set is in docs/INDIVIDUAL-MENU-IMAGES.md. Includes burgers, Tex-Mex, sides, soft drinks, beers and cocktails; unbranded packaged-drink illustrations do not assert packaging or size. Images appear in menu cards, drawer browsing thumbnails and item detail views, with lazy loading and illustration labels.
+- Navigation positioned independently at the horizontal center. Browser measured the same center before/after scroll (654.545px at a 1309px viewport), while logo animation remains intact.
+- Existing combo/specials photos now fade along the edges into their background. Original hero video unchanged.
+- Ten source-checked original Google excerpts in src/data/reviews.ts. Added Daniel Barrera, Mery Jaramillo, Diego Arias, Ivan Rosero, Nazareth Puga, Gabriel Valle and Paola Espinoza. Ratings match the live listing; Ivan's live rating was five stars, correcting the prior source-unverified four-star record. Reviews include mixed comments and link to the full listing. Source: https://maps.app.goo.gl/FTVdfzcjXtNxwSw76 . Checked via Spanish Google Maps review list on September 6, 2026.
+- Carousel renders a sliding five-position window with offscreen entry/exit. Review identities stay stable across one-step navigation, including wrap from ten to one, preventing the outgoing card from sweeping across the front.
+- Footer centers the logo and adds section links. Contact social buttons lift/glow on hover with reduced-motion support. Ordering has a direct CTA and integrated call tile.
+- Removed Local 1 wording; the opposite-business reference (Sistemas de Escapes Falconi) comes from the user's instruction, not independent business verification.
+
+Web delivery uses JPEG encoding at quality 85, retaining generated pixel dimensions. Original tool outputs remain in the image-generation folder. Güitig was regenerated explicitly as colorless sparkling mineral water after visual inspection found an incorrect fruit-drink illustration.
+
+Final validation: all 47 JPEGs loaded in the browser with zero broken images; illustrations visually inspected, including corrected Güitig and Piña Colada. Review navigation confirmed 1 → 2 and 1 → 10 → 1. Narrow mobile product drawer and footer checked at 354px with no page overflow. All five existing tests pass. Production build completed before local save.

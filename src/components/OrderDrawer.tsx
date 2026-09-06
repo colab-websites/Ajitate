@@ -1,3 +1,4 @@
+import { MenuPhoto } from './MenuPhoto'
 import { useEffect, useRef, useState } from 'react'
 import { MENU, lineKey, money, subtotal, unitPrice } from '../data/menu'
 import { formatPhone } from '../data/phone'
@@ -74,10 +75,10 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
           {step==='browse'&&<>
             <input className="order-input" type="search" aria-label="Buscar producto para pedir" placeholder="Hamburguesa, tacos, bebida…" value={search} onChange={e=>setSearch(e.target.value)}/>
             <div className="drawer-categories">{['Todo',...new Set(MENU.map(i=>i.category))].map(c=><button key={c} aria-pressed={category===c} onClick={()=>setCategory(c)}>{c}</button>)}</div>
-            <div className="drawer-products">{MENU.filter(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(i=><article key={i.id} className="drawer-product"><button className="drawer-product-info" onClick={()=>choose(i.id)}><small>{i.category}</small><strong>{i.name}</strong><p>{i.description}</p><span>{money(i.price)}</span></button><button className="quick-add" aria-label={`Agregar ${i.name}`} onClick={()=>quickAdd(i.id)}>+</button></article>)}</div>
+            <div className="drawer-products">{MENU.filter(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(i=><article key={i.id} className="drawer-product"><button className="drawer-product-info" onClick={()=>choose(i.id)}><MenuPhoto item={i} compact/><small>{i.category}</small><strong>{i.name}</strong><p>{i.description}</p><span>{money(i.price)}</span></button><button className="quick-add" aria-label={`Agregar ${i.name}`} onClick={()=>quickAdd(i.id)}>+</button></article>)}</div>
             {!MENU.some(i=>(category==='Todo'||i.category===category)&&i.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))&&<p>No encontramos ese producto.</p>}
           </>}
-          {step==='item'&&<div className="item-options"><span className="food-category">{item.category}</span><p>{item.description}</p><strong className="item-price">{money(item.price)}</strong>
+          {step==='item'&&<div className="item-options"><MenuPhoto item={item}/><span className="food-category">{item.category}</span><p>{item.description}</p><strong className="item-price">{money(item.price)}</strong>
             {item.combo&&<fieldset><legend>¿Lo hacemos combo? + {money(199)}</legend><p className="order-hint">Incluye chilli nachos o papas y bebida. Las opciones de bebida se confirman con el restaurante.</p>{[['','Solo el plato'],['Chilli nachos','Combo con chilli nachos'],['Papas','Combo con papas']].map(([value,label])=><label key={value} className="option-choice"><input type="radio" name="combo" checked={side===value} onChange={()=>setSide(value)}/>{label}</label>)}</fieldset>}
             <div className="quantity-row"><span>Cantidad</span><div className="quantity-control"><button aria-label="Reducir cantidad" disabled={quantity<=1} onClick={()=>setQuantity(q=>q-1)}>−</button><output aria-live="polite">{quantity}</output><button aria-label="Aumentar cantidad" disabled={quantity>=99} onClick={()=>setQuantity(q=>q+1)}>+</button></div></div>
             <button className="order-primary" onClick={add}>Agregar al pedido · {money((item.price+(side&&item.combo?199:0))*quantity)}</button>
