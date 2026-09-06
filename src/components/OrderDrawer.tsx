@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MENU, lineKey, money, subtotal, unitPrice } from '../data/menu'
+import { DeliveryPin } from './DeliveryPin'
+import type { Pin } from './DeliveryPin'
 import type { CartLine } from '../data/menu'
 
 export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
@@ -16,6 +18,9 @@ export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
   const [method,setMethod]=useState('delivery')
   const [address,setAddress]=useState('')
   const [notes,setNotes]=useState('')
+  const [pin,setPin]=useState<Pin|null>(null)
+  const [napkins,setNapkins]=useState(false)
+  const [straws,setStraws]=useState(false)
   const [copied,setCopied]=useState(false)
   const [notice,setNotice]=useState('')
   const item=MENU.find(i=>i.id===selected)!
@@ -44,6 +49,7 @@ export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
     `Subtotal de productos: ${money(total)}`,
     method==='delivery'?`Entrega a domicilio: ${address.trim()}`:'Retiro en el local (por confirmar)',
     `Nombre: ${name.trim()}`,`Teléfono: ${phone.trim()}`,
+    `Servilletas: ${napkins?'Sí':'No'} · Sorbetes: ${straws?'Sí':'No'} (sin recargo)`,
     ...(notes.trim()?[`Notas: ${notes.trim()}`]:[]),
     'Por favor confirmar disponibilidad, opciones de bebida del combo, costo de entrega, total final y forma de pago.'
   ].join('\n')
@@ -77,6 +83,8 @@ export function OrderDrawer({request}:{request:{serial:number;id:string}}) {
             <label className="form-label">Teléfono<input className="order-input" required type="tel" pattern="[+0-9 ()-]{7,20}" autoComplete="tel" value={phone} onChange={e=>setPhone(e.target.value)}/></label>
             <fieldset><legend>¿Cómo lo prefieres?</legend><label className="option-choice"><input type="radio" name="delivery" checked={method==='delivery'} onChange={()=>setMethod('delivery')}/>A domicilio</label><label className="option-choice"><input type="radio" name="delivery" checked={method==='pickup'} onChange={()=>setMethod('pickup')}/>Retiro en el local · por confirmar</label></fieldset>
             {method==='delivery'&&<label className="form-label">Dirección y referencia<textarea className="order-input" required maxLength={400} autoComplete="street-address" value={address} onChange={e=>setAddress(e.target.value)}/></label>}
+            {method==='delivery'&&<DeliveryPin pin={pin} onChange={setPin}/>}
+            <fieldset><legend>¿Necesitas algo más? · Sin recargo</legend><label className="option-choice"><input type="checkbox" checked={napkins} onChange={e=>setNapkins(e.target.checked)}/>Servilletas</label><label className="option-choice"><input type="checkbox" checked={straws} onChange={e=>setStraws(e.target.checked)}/>Sorbetes</label></fieldset>
             <label className="form-label">Notas para el restaurante<textarea className="order-input" maxLength={600} placeholder="Preferencias, alergias o consultas…" value={notes} onChange={e=>setNotes(e.target.value)}/></label><p className="order-hint">Las modificaciones y solicitudes especiales están sujetas a confirmación.</p><button className="order-primary" type="submit">Revisar pedido · {money(total)}</button>
           </form>}
           {step==='summary'&&<><p className="order-hint">Revisa tu pedido antes de compartirlo. Todavía no ha sido enviado ni confirmado.</p><textarea className="order-summary" aria-label="Resumen del pedido" readOnly value={summary}/><button className="order-primary" onClick={copy}>{copied?'Resumen copiado ✓':'Copiar resumen del pedido'}</button><p role="status" className="order-hint">{copied?'Puedes pegar el resumen en tu conversación con el restaurante.':''}</p><a className="order-call" href="tel:+593983047406">Llamar al 0983047406 ↗</a><p className="order-hint">Número de pedidos publicado en el menú. Confirma el total y el pago directamente con Ajitate.</p><button className="glass-action" onClick={()=>setStep('details')}>Editar datos</button></>}

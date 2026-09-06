@@ -28,8 +28,8 @@ export default function App() {
           <h2>TE GUARDAMOS<br /><span>UN LUGAR</span></h2>
           <p className="contact-intro">La buena comida sabe mejor en buena compañía.</p>
           <div className="contact-grid">
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">↗</span><h3>Ubicación</h3><p>Cuenca, Ecuador</p><small>Dirección y mapa oficial por confirmar.</small></article>
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">◷</span><h3>Horarios</h3><p>Estamos preparando tu próxima visita.</p><small>Horarios de atención por confirmar.</small></article>
+            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">↗</span><h3>Ubicación</h3><p>Av. Don Bosco, Cuenca<br />Local 1 · 3XMF+X8M</p><a className="contact-phone" href="https://maps.app.goo.gl/FTVdfzcjXtNxwSw76" target="_blank" rel="noreferrer">Cómo llegar · Local 1 ↗</a><small>Mapa enlazado por @ajitate.ec.</small></article>
+            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">◷</span><h3>Horarios</h3><p>Martes a sábado<br />12:00–15:00 · 18:00–22:00</p><a className="contact-phone" href="https://www.instagram.com/ajitate.ec/" target="_blank" rel="noreferrer">Horarios publicados en Instagram ↗</a></article>
             <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">♨</span><h3>Pedidos</h3><p>Tu próximo antojo empieza aquí.</p><button className="glass-action" onClick={() => openOrder()}>Información de pedidos ↗</button><a className="contact-phone" href="tel:+593983047406">0983047406</a></article>
           </div>
           <div id="redes" className="social-placeholder liquid-panel">

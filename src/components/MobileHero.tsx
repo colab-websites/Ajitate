@@ -52,10 +52,7 @@ export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
             background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)',
           }}
         />
-        {/* Badge */}
-        <div className="absolute bottom-4 left-4 size-16 rounded-full border border-white/40 bg-black/70 flex items-center justify-center">
-          <img src={LOGO_URL} alt="Ajitate" className="h-14 w-auto" />
-        </div>
+
       </div>
 
       {/* Headline */}

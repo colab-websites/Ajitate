@@ -71,8 +71,7 @@ function StarRow({ count }: { count: number }) {
 export function TestimonialsSection() {
   const [active, setActive] = useState(0)
   const [revealed, setRevealed] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
-  const dragStart = useRef(0)
+  const touchStart = useRef({x:0,y:0})
   const sectionRef = useRef<HTMLDivElement>(null)
   const total = REVIEWS.length
 
@@ -106,9 +105,10 @@ export function TestimonialsSection() {
     const isVisible = absOffset <= 2
 
     return {
-      transform: `translateX(${offset * CARD_GAP}px) scale(1)`,
+      transform: `translate(${offset * CARD_GAP}px, ${absOffset * 26}px) scale(${isActive ? 1 : 1 - absOffset * .06})`,
       zIndex: isActive ? 20 : 10 - absOffset,
       opacity: isVisible ? 1 : 0,
+      filter: isActive ? 'none' : `blur(${absOffset * 1.2}px) brightness(${1 - absOffset * .2})`,
                     pointerEvents: (isActive ? 'auto' : 'none') as 'auto' | 'none',
     }
   }
@@ -120,6 +120,8 @@ export function TestimonialsSection() {
       tabIndex={0}
       aria-label="Reseñas, usa las flechas para navegar"
       onKeyDown={e => { if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() } else if (e.key === 'ArrowRight') { e.preventDefault(); goNext() } }}
+      onTouchStart={e=>{touchStart.current={x:e.touches[0].clientX,y:e.touches[0].clientY}}}
+      onTouchEnd={e=>{const dx=e.changedTouches[0].clientX-touchStart.current.x;const dy=e.changedTouches[0].clientY-touchStart.current.y;if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){dx>0?goPrev():goNext()}}}
       className="relative overflow-hidden"
       style={{ background: '#0a0a0a' }}
     >
@@ -265,7 +267,7 @@ export function TestimonialsSection() {
                     maxWidth: 'calc(100vw - 48px)',
                     ...style,
 
-                    transition: 'transform 0.4s ease',
+                    transition: 'transform 0.4s ease, filter 0.4s ease',
                   }}
                 >
                   <div
@@ -487,32 +489,6 @@ export function TestimonialsSection() {
         </div>
       </div>
 
-      {/* ── DRAG OVERLAY ── */}
-      <div
-        className="absolute inset-0 z-30 cursor-grab active:cursor-grabbing"
-        style={{ pointerEvents: isDragging ? 'auto' : 'none' }}
-        onMouseDown={e => { setIsDragging(true); dragStart.current = e.clientX }}
-        onMouseUp={e => {
-          if (!isDragging) return
-          const diff = e.clientX - dragStart.current
-          if (Math.abs(diff) > 50) {
-            if (diff > 0) goPrev()
-            else goNext()
-          }
-          setIsDragging(false)
-        }}
-        onMouseLeave={() => setIsDragging(false)}
-        onTouchStart={e => { setIsDragging(true); dragStart.current = e.touches[0].clientX }}
-        onTouchEnd={e => {
-          if (!isDragging) return
-          const diff = e.changedTouches[0].clientX - dragStart.current
-          if (Math.abs(diff) > 50) {
-            if (diff > 0) goPrev()
-            else goNext()
-          }
-          setIsDragging(false)
-        }}
-      />
     </section>
   )
 }

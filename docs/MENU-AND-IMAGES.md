@@ -39,4 +39,24 @@ The original hero video is unchanged.
 
 ## Next launch inputs
 
-Confirmed address/map, opening hours, delivery coverage/fee, payment methods and the restaurant's preferred order channel. Review authenticity still needs source confirmation.
+Delivery coverage/fee, payment methods and the restaurant's preferred order channel still need confirmation. Four review sources remain unverified.
+
+
+## September 6 refinement
+
+- Center review stays prominent; neighbors step downward, shrink slightly and blur. Removed the invisible drag overlay and nested review scrolling; vertical page scrolling works over the cards. Horizontal touch swipes still change reviews.
+- Removed the duplicate logo inside the mobile hero. Original video unchanged.
+- Added optional OpenStreetMap delivery picker, draggable pin and a Google Maps preview link. No automatic location access. Pin remains in page memory and is intentionally excluded from the copied order summary; no coordinates are sent to the restaurant.
+- Added free napkin/straw choices to the summary.
+- Combo banners now use public/images/combo.png and explain that the beverage is included with a choice of chilli nachos OR fries. Generated illustration, not an authentic dish photograph.
+
+Combo image prompt:
+Create one landscape 3:2 realistic editorial food category photograph for an Ecuadorian Tex-Mex restaurant combo upgrade. Three separated items on a matte near-black table: on the left a small bowl of chilli nachos with beef chilli and cheddar; in the middle a small bowl of golden rustic fries; on the right one clear glass of dark cola with ice. These are ALTERNATIVE side options plus an INCLUDED drink, so keep distinct dishes clearly separated, do not merge them into one serving. No burger or tacos. Entire bowls and glass in frame, generous breathing room, warm premium studio lighting, same dark elegant red-accent restaurant photography look. No text, no logos, no borders, no collage. Illustrative image, not actual restaurant photo.
+
+Public sources checked September 6, 2026:
+- https://www.instagram.com/ajitate.ec/ bio publishes Tuesday–Saturday 12:00–15:00 and 18:00–22:00. Added these with source attribution.
+- Official Instagram's Local 1 map link: https://maps.app.goo.gl/FTVdfzcjXtNxwSw76 . Resolves to Ají tate, 3XMF+X8M, Av. Don Bosco, Cuenca. Added address and map.
+- Google listing shows 24 hours, conflicting with the Instagram schedule; did not adopt that claim.
+- Nicole Cajamarca's review on that Google listing matches the existing review text. Other four reviews were not independently confirmed; the section remains marked source pending rather than claiming all are verified.
+
+Validation: production build and menu tests; browser checkout with dummy data, optional map selection, free extras in $3.50 summary, no coordinates in copied text; review scroll moved page from 7016 to 7373px while pointer was over the card. No order submitted.
