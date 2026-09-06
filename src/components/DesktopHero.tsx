@@ -14,15 +14,15 @@ function HeadlineWords() {
     <div
       style={{
         position: 'absolute',
-        left: 0,
-        top: 200.76,
-        width: 900,
+        left: 'calc(0px * var(--hero-scale))',
+        top: 'calc(200.76px * var(--hero-scale))',
+        width: 'calc(900px * var(--hero-scale))',
       }}
     >
       {/* Line 1: SABOR QUE */}
       <div
         className="flex items-end"
-        style={{ marginLeft: 24, gap: 16, whiteSpace: 'nowrap', width: 'max-content', flexShrink: 0 }}
+        style={{ marginLeft: 'calc(24px * var(--hero-scale))', gap: 'calc(16px * var(--hero-scale))', whiteSpace: 'nowrap', width: 'max-content', flexShrink: 0 }}
       >
         <span style={{ width: 'max-content', flexShrink: 0 }}>
           {line1.map((char, i) => (
@@ -31,11 +31,11 @@ function HeadlineWords() {
               data-anim
               data-headline-letter
               data-from-y="99.37"
-              className="inline-block grunge-text"
+              className="inline-block hero-title-text"
               style={{
-                fontSize: 150,
+                fontSize: 'calc(150px * var(--hero-scale))',
                 lineHeight: 0.84,
-                letterSpacing: -3.97,
+                letterSpacing: 'calc(-3.97px * var(--hero-scale))',
                 color: char === ' ' ? 'transparent' : '#ffffff',                fontFamily: 'var(--font-display)',
                 whiteSpace: 'nowrap',
                 width: 'max-content',
@@ -52,8 +52,8 @@ function HeadlineWords() {
       {/* Line 2: AJITA */}
       <div
         style={{
-          marginTop: 31,
-          marginLeft: 320,
+          marginTop: 'calc(31px * var(--hero-scale))',
+          marginLeft: 'calc(320px * var(--hero-scale))',
           whiteSpace: 'nowrap',
           width: 'max-content',
           flexShrink: 0,
@@ -65,11 +65,11 @@ function HeadlineWords() {
             data-anim
             data-headline-letter
             data-from-y="99.37"
-            className="inline-block grunge-text"
+            className="inline-block hero-title-text"
             style={{
-              fontSize: 200,
+              fontSize: 'calc(200px * var(--hero-scale))',
               lineHeight: 0.84,
-              letterSpacing: -5.39,
+              letterSpacing: 'calc(-5.39px * var(--hero-scale))',
               color: '#e53935',
               fontFamily: 'var(--font-display)',
               whiteSpace: 'nowrap',
@@ -91,10 +91,10 @@ function Badge() {
     <div
       style={{
         position: 'absolute',
-        left: 0.52,
-        top: 328.52,
-        width: 256.48,
-        height: 256.48,
+        left: 'calc(0.52px * var(--hero-scale))',
+        top: 'calc(328.52px * var(--hero-scale))',
+        width: 'calc(256.48px * var(--hero-scale))',
+        height: 'calc(256.48px * var(--hero-scale))',
       }}
     >
       <svg
@@ -142,7 +142,7 @@ function Badge() {
         data-anim
         data-badge-glyph
         data-from-x="-140"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px]"
+        className="hero-badge-glyph absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px]"
       >
         <BurgerGlyph className="w-full h-full" />
       </div>
@@ -159,14 +159,14 @@ function IntroParagraph() {
     <div
       style={{
         position: 'absolute',
-        left: 170.7,
-        top: 602,
-        fontSize: 18,
+        left: 'calc(170.7px * var(--hero-scale))',
+        top: 'calc(602px * var(--hero-scale))',
+        fontSize: 'calc(18px * var(--hero-scale))',
         lineHeight: 1.4,
         color: 'white',
         textShadow: '0 2px 10px rgba(0,0,0,0.6)',
         width: 'max-content',
-        maxWidth: 459.25,
+        maxWidth: 'calc(459.25px * var(--hero-scale))',
       }}
     >
       {words.map((word, i) => (
@@ -200,10 +200,10 @@ function SocialRail() {
     <div
       style={{
         position: 'absolute',
-        left: 1368.87,
-        top: 152,
-        width: 47.26,
-        height: 201,
+        left: 'calc(1368.87px * var(--hero-scale))',
+        top: 'calc(152px * var(--hero-scale))',
+        width: 'calc(47.26px * var(--hero-scale))',
+        height: 'calc(201px * var(--hero-scale))',
       }}
     >
       {icons.map(({ Icon, x, name }, i) => (
@@ -214,8 +214,8 @@ function SocialRail() {
           data-anim
           data-social-icon
           data-from-x={x}
-          className="absolute flex items-center justify-center rounded-full border border-white/70 text-white w-[47.26px] h-[47.26px] transition-colors hover:bg-white hover:text-black"
-          style={{ top: i * 76.87 }}
+          className="hero-social-link absolute flex items-center justify-center rounded-full border border-white/70 text-white w-[47.26px] h-[47.26px] transition-colors hover:bg-white hover:text-black"
+          style={{ top: `calc(${i * 76.87}px * var(--hero-scale))` }}
         >
           <Icon className="w-5 h-5" />
         </a>
@@ -239,20 +239,7 @@ export function DesktopHero() {
   }
 
   return (
-    <div id="inicio" ref={containerRef} className="original-desktop-hero relative w-full h-screen overflow-hidden" style={{ background: '#000' }}>
-      <h1 className="sr-only">SABOR QUE AJITA</h1>
-      <div
-        ref={scopeRef}
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          width: 1440,
-          height: 810,
-          transform: `translate(-50%, -50%) scale(${scale})`,
-          transformOrigin: 'center center',
-        }}
-      >
+    <div id="inicio" ref={containerRef} className="original-desktop-hero relative w-full h-screen overflow-hidden" style={{ background: '#000', '--hero-scale': scale } as React.CSSProperties}>
         {/* Background video */}
         <video
           muted
@@ -265,10 +252,10 @@ export function DesktopHero() {
           onLoadedData={handleVideoReady}
           style={{
             position: 'absolute',
-            left: 370,
+            left: '24%',
             top: 0,
-            width: 1400,
-            height: 810,
+            width: '100%',
+            height: '100%',
             objectFit: 'cover',
             maxWidth: 'none',
           }}
@@ -315,6 +302,18 @@ export function DesktopHero() {
           }}
         />
 
+      <h1 className="sr-only">SABOR QUE AJITA</h1>
+      <div
+        ref={scopeRef}
+        style={{
+          position: 'absolute',
+          width: 'calc(1440px * var(--hero-scale))',
+          height: 'calc(810px * var(--hero-scale))',
+          left: 'calc(50% - 720px * var(--hero-scale))',
+          top: 'calc(50% - 405px * var(--hero-scale))',
+          transformOrigin: 'center center',
+        }}
+      >
         {/* Headline */}
         <HeadlineWords />
 

@@ -72,3 +72,11 @@ npm ci
 npm run dev -- --host 127.0.0.1
 npm run build
 ```
+
+## Glass, sharpness and carousel refinement
+
+- Hero background and overlays now cover the viewport independently of the content. Design coordinates use actual CSS layout dimensions rather than a scaled ancestor transform. Headline masking was removed for cleaner text, while the original font, layout and video are retained.
+- The scrolled logo uses a rounded glass capsule. Logo, navigation and review cards share the same gradient, border, shadow and 22px backdrop blur (including Safari's prefixed property).
+- Review cards use 2D positioning without ancestor opacity/preserve-3d flattening. Removed auto-advance and delayed color transitions. Arrow-key navigation is scoped to the reviews section.
+- The review text originated in Sergio's saved source; it was not generated in this session. Searches for two exact reviewer/restaurant combinations returned no results, which does not establish authenticity or fabrication. The unverified 4.8 aggregate was removed; reviews remain explicitly source-unconfirmed.
+- Checked the hero visually, confirmed identical computed glass treatments, and tested consecutive review navigation in Safari. Selected cards remained selected across subsequent observations.

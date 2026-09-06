@@ -55,7 +55,6 @@ const REVIEWS = [
 
 const CARD_W = 420
 const CARD_GAP = 160
-const ROTATION = 12
 
 function StarRow({ count }: { count: number }) {
   return (
@@ -72,11 +71,9 @@ function StarRow({ count }: { count: number }) {
 export function TestimonialsSection() {
   const [active, setActive] = useState(0)
   const [revealed, setRevealed] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const dragStart = useRef(0)
   const sectionRef = useRef<HTMLDivElement>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const total = REVIEWS.length
 
   useEffect(() => {
@@ -98,23 +95,7 @@ export function TestimonialsSection() {
     setActive(p => (p - 1 + total) % total)
   }, [total])
 
-  // Auto-advance
-  useEffect(() => {
-    if (!revealed || isPaused) return
-    timerRef.current = setTimeout(goNext, 4000)
-    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [active, revealed, isPaused, goNext])
-
-  // Keyboard
-  useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') goPrev()
-      else if (e.key === 'ArrowRight') goNext()
-    }
-    window.addEventListener('keydown', handle)
-    return () => window.removeEventListener('keydown', handle)
-  }, [goNext, goPrev])
-
+  // User-controlled navigation: no timer can advance again after a click.
   const getCardStyle = (index: number) => {
     let offset = index - active
     if (offset > total / 2) offset -= total
@@ -125,9 +106,9 @@ export function TestimonialsSection() {
     const isVisible = absOffset <= 2
 
     return {
-      transform: `translateX(${offset * CARD_GAP}px) rotateY(${offset * ROTATION}deg) scale(${isActive ? 1 : 0.88 - absOffset * 0.04})`,
+      transform: `translateX(${offset * CARD_GAP}px) scale(${isActive ? 1 : 0.88 - absOffset * 0.04})`,
       zIndex: isActive ? 20 : 10 - absOffset,
-      opacity: isVisible ? (isActive ? 1 : 0.55 - absOffset * 0.12) : 0,
+      opacity: isVisible ? 1 : 0,
                     pointerEvents: (isActive ? 'auto' : 'none') as 'auto' | 'none',
     }
   }
@@ -135,10 +116,12 @@ export function TestimonialsSection() {
   return (
     <section
       ref={sectionRef}
+      id="resenas"
+      tabIndex={0}
+      aria-label="Reseñas, usa las flechas para navegar"
+      onKeyDown={e => { if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() } else if (e.key === 'ArrowRight') { e.preventDefault(); goNext() } }}
       className="relative overflow-hidden"
       style={{ background: '#0a0a0a' }}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
     >
       {/* ═══ BACKGROUND ELEMENTS ═══ */}
       <div
@@ -239,9 +222,8 @@ export function TestimonialsSection() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-            <span className="text-white text-sm font-semibold">4.8</span>
-            <StarRow count={5} />
-            <span className="text-white/25 text-[9px]">Google Reviews</span>
+            <span className="text-white/70 text-xs">Verificación pendiente</span>
+            <span className="text-white/40 text-[9px]">Fuente original pendiente</span>
           </div>
 
           <div
@@ -258,7 +240,7 @@ export function TestimonialsSection() {
         <div
           className="relative mx-auto"
           style={{
-            perspective: '1200px',
+
             height: 380,
             maxWidth: `${CARD_W + CARD_GAP * 4}px`,
             opacity: revealed ? 1 : 0,
@@ -267,7 +249,7 @@ export function TestimonialsSection() {
         >
           <div
             className="absolute inset-0 flex items-center justify-center"
-            style={{ transformStyle: 'preserve-3d' }}
+
           >
             {REVIEWS.map((review, i) => {
               const style = getCardStyle(i)
@@ -281,25 +263,13 @@ export function TestimonialsSection() {
                     width: CARD_W,
                     maxWidth: 'calc(100vw - 48px)',
                     ...style,
-                    transformStyle: 'preserve-3d',
-                    transition: 'transform 0.65s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease, z-index 0s',
+
+                    transition: 'transform 0.4s ease',
                   }}
                 >
                   <div
-                    className="relative rounded-2xl overflow-hidden h-full"
-                    style={{
-                      background: isActive
-                        ? 'linear-gradient(155deg, rgba(229,57,53,0.06), rgba(255,255,255,0.02), rgba(10,10,10,0.97))'
-                        : 'linear-gradient(155deg, rgba(255,255,255,0.03), rgba(255,255,255,0.006), rgba(10,10,10,0.98))',
-                      border: isActive
-                        ? '1px solid rgba(229,57,53,0.18)'
-                        : '1px solid rgba(255,255,255,0.04)',
-                      backdropFilter: 'blur(20px)',
-                      boxShadow: isActive
-                        ? '0 32px 64px -16px rgba(0,0,0,0.5), 0 0 48px rgba(229,57,53,0.06)'
-                        : '0 8px 24px -8px rgba(0,0,0,0.3)',
-                      padding: '2rem',
-                    }}
+                    className="review-glass-card liquid-panel relative rounded-2xl overflow-hidden h-full"
+                    style={{ padding: '2rem', borderColor: isActive ? 'rgba(229,57,53,0.4)' : 'rgba(255,255,255,0.17)' }}
                   >
                     {/* Floating quote mark */}
                     <div
@@ -309,7 +279,6 @@ export function TestimonialsSection() {
                         fontSize: '5rem',
                         lineHeight: 1,
                         color: isActive ? 'rgba(229,57,53,0.08)' : 'rgba(255,255,255,0.02)',
-                        transition: 'color 0.5s ease',
                       }}
                     >
                       &ldquo;
@@ -337,7 +306,6 @@ export function TestimonialsSection() {
                         color: isActive ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.4)',
                         fontSize: 'clamp(0.88rem, 1.2vw, 0.98rem)',
                         fontFamily: 'var(--font-sans)',
-                        transition: 'color 0.5s ease',
                       }}
                     >
                       {review.text}
@@ -364,7 +332,6 @@ export function TestimonialsSection() {
                         background: isActive
                           ? 'linear-gradient(90deg, rgba(229,57,53,0.2), transparent)'
                           : 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)',
-                        transition: 'background 0.5s ease',
                       }}
                     />
 
@@ -380,7 +347,6 @@ export function TestimonialsSection() {
                             border: isActive
                               ? '1.5px solid rgba(229,57,53,0.22)'
                               : '1.5px solid rgba(255,255,255,0.05)',
-                            transition: 'all 0.5s ease',
                           }}
                         >
                           <span
@@ -388,7 +354,6 @@ export function TestimonialsSection() {
                             style={{
                               fontFamily: 'var(--font-display)',
                               color: isActive ? '#e53935' : 'rgba(255,255,255,0.25)',
-                              transition: 'color 0.5s ease',
                             }}
                           >
                             {review.name.split(' ').map(w => w[0]).join('').slice(0, 2)}

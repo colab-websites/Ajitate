@@ -356,3 +356,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid #ffa68c; outline-offs
   .original-footer { flex-direction: column; align-items: flex-start; padding: 32px 22px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
+
+/* Shared optical glass treatment; no opaque logo tile or flattened 3D review layer. */
+:root { --glass-blur: blur(22px) saturate(180%); --glass-fill: linear-gradient(140deg, rgba(255,255,255,.1), rgba(255,255,255,.035)); --glass-shadow: 0 8px 32px #0006, inset 0 1px 0 #ffffff16; }
+.liquid-panel, .is-scrolled .floating-logo { background: var(--glass-fill); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid rgba(255,255,255,.17); box-shadow: var(--glass-shadow); }
+.is-scrolled .floating-logo { border-radius: 999px; }
+.is-scrolled .floating-nav { background: var(--glass-fill); }
+.review-glass-card { isolation: isolate; }
+.hero-badge-glyph { width: calc(68px * var(--hero-scale)); height: calc(68px * var(--hero-scale)); }
+.hero-social-link { width: 44px; height: 44px; background: #0003; }
+.hero-title-text { -webkit-mask-image: none; mask-image: none; }
