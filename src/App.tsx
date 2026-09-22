@@ -8,6 +8,7 @@ import { MobileHero } from './components/MobileHero'
 import { RestaurantMenu } from './components/RestaurantMenu'
 import { OrderDrawer } from './components/OrderDrawer'
 import { StorySection } from './components/StorySection'
+import { MomentsGallery } from './components/MomentsGallery'
 import { TestimonialsSection } from './components/TestimonialsSection'
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
       </section>
       <RestaurantMenu onSelect={id=>openOrder(id)} onQuickAdd={id=>openOrder(id,true)} />
       <div id="nosotros"><StorySection /></div>
+      <MomentsGallery />
       <TestimonialsSection />
       <section id="ubicacion" className="contact-section">
         <div className="contact-glow" aria-hidden="true" />
