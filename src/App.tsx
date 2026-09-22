@@ -22,13 +22,12 @@ export default function App() {
       <section id="esencia" className="home-intro" aria-label="La pasión de comer">
         <div className="home-intro-card">
           <figure className="home-intro-visual">
-            <img src={`${import.meta.env.BASE_URL}images/texmex.png`} alt="Ilustración de tacos Tex-Mex" loading="lazy" />
+            <img src={`${import.meta.env.BASE_URL}images/ajitate-instagram-spread-2026-08-24.jpg`} alt="Platos de Ajitate servidos en el restaurante" loading="lazy" />
             <div className="home-intro-ratio" aria-label="50% Tex-Mex, 50% Ajitate">
               <span><strong>50%</strong><small>TEX-MEX</small></span>
               <i aria-hidden="true">+</i>
               <span><strong>50%</strong><small>AJITATE</small></span>
             </div>
-            <figcaption>Ilustración IA</figcaption>
           </figure>
           <div className="home-intro-copy">
             <p className="section-kicker">NUESTRA ESENCIA</p>
