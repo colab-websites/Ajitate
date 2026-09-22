@@ -19,10 +19,26 @@ export default function App() {
     <DesktopNavbar onOrder={() => openOrder()} />
     <main>
       {isDesktop ? <DesktopHero /> : <MobileHero onOrder={openOrder} />}
-      <section className="home-intro" aria-label="La pasión de comer">
-        <p className="section-kicker">50% TEX-MEX · 50% AJITATE</p>
-        <p>Con una propuesta creativa que fusiona la esencia del Tex-Mex con sabores de autor, AJITATE ha conquistado el paladar de cientos de ecuatorianos y extranjeros.</p>
-        <p>Una experiencia llena de sabor, creatividad y ese toque único que hace que cada visita sea diferente.</p>
+      <section id="esencia" className="home-intro" aria-label="La pasión de comer">
+        <div className="home-intro-card">
+          <figure className="home-intro-visual">
+            <img src={`${import.meta.env.BASE_URL}images/texmex.png`} alt="Ilustración de tacos Tex-Mex" loading="lazy" />
+            <div className="home-intro-ratio" aria-label="50% Tex-Mex, 50% Ajitate">
+              <span><strong>50%</strong><small>TEX-MEX</small></span>
+              <i aria-hidden="true">+</i>
+              <span><strong>50%</strong><small>AJITATE</small></span>
+            </div>
+            <figcaption>Ilustración IA</figcaption>
+          </figure>
+          <div className="home-intro-copy">
+            <p className="section-kicker">NUESTRA ESENCIA</p>
+            <h2>UNA MEZCLA<br /><span>MUY NUESTRA.</span></h2>
+            <div className="home-intro-rule" aria-hidden="true" />
+            <p>Con una propuesta creativa que fusiona la esencia del Tex-Mex con sabores de autor, AJITATE ha conquistado el paladar de cientos de ecuatorianos y extranjeros.</p>
+            <p>Una experiencia llena de sabor, creatividad y ese toque único que hace que cada visita sea diferente.</p>
+            <a href="#menu" className="home-intro-link">DESCUBRE EL MENÚ <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
       </section>
       <RestaurantMenu onSelect={id=>openOrder(id)} onQuickAdd={id=>openOrder(id,true)} />
       <div id="nosotros"><StorySection /></div>
