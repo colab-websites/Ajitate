@@ -15,21 +15,21 @@ const PRODUCTS = [
     desc: 'Doble carne, queso ahumado, pepinillos y salsa BBQ',
     price: '$12.9',
     img: `${ASSET_BASE}/product-1.png`,
-    bg: 'rgba(229,57,53,0.15)',
+    bg: 'rgba(255,48,56,0.15)',
   },
   {
     name: 'Taco Loco',
     desc: 'Carne asada, guacamol y pico de gallo',
     price: '$8.5',
     img: `${ASSET_BASE}/product-2.png`,
-    bg: 'rgba(229,57,53,0.1)',
+    bg: 'rgba(255,48,56,0.1)',
   },
   {
     name: 'Burrito Gigante',
     desc: 'Arroz, frijoles, carne y queso derretido',
     price: '$10.9',
     img: `${ASSET_BASE}/product-3.png`,
-    bg: 'rgba(229,57,53,0.08)',
+    bg: 'rgba(255,48,56,0.08)',
   },
 ]
 
@@ -70,27 +70,27 @@ export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
             flexShrink: 0,
           }}
         >
-          SABOR QUE
+          LA PASIÓN
           <br />
-          <span style={{ color: '#e53935' }}>AJITA</span>
+          <span style={{ color: '#ff3038' }}>DE COMER</span>
         </h1>
       </div>
 
       {/* Paragraph */}
       <p className="px-4 mt-5 text-[15px] leading-relaxed text-white/90 fade-up" style={{ animationDelay: '0.22s' }}>
-        <strong>Ajitate</strong> es el lugar perfecto en Cuenca donde la familia, las risas y el sabor tex-mex se encuentran. Fundado por Daniel Bojorque, te esperamos con hamburguesas, tacos, burritos, costillas y papas BBQ.
+        <strong>AJITATE</strong> es un destino seguro para comer delicioso. Nuestra propuesta creativa fusiona la esencia del Tex-Mex con sabores de autor. Cada visita es una experiencia llena de sabor y creatividad.
       </p>
 
       {/* Badge line */}
       <div className="px-4 mt-4 fade-up" style={{ animationDelay: '0.26s' }}>
-        <span className="text-xs uppercase tracking-[0.2em] text-[#e53935] font-semibold">
-          TEX-MEX EN CUENCA
+        <span className="text-xs uppercase tracking-[0.2em] text-[#ff3038] font-semibold">
+          50% TEX-MEX · 50% AJITATE
         </span>
       </div>
 
       {/* CTA row */}
       <div className="px-4 mt-5 flex items-center gap-3 fade-up" style={{ animationDelay: '0.30s' }}>
-        <a href="#menu" className="flex items-center justify-center flex-1 h-12 rounded-full bg-[#e53935] text-white font-semibold text-base">
+        <a href="#menu" className="flex items-center justify-center flex-1 h-12 rounded-full bg-[#ff3038] text-white font-semibold text-base">
           Ver Menú
         </a>
         <button aria-label="Información de pedidos" onClick={() => onOrder()} className="size-12 rounded-full bg-white flex items-center justify-center text-black shrink-0">

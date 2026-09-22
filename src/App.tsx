@@ -19,6 +19,11 @@ export default function App() {
     <DesktopNavbar onOrder={() => openOrder()} />
     <main>
       {isDesktop ? <DesktopHero /> : <MobileHero onOrder={openOrder} />}
+      <section className="home-intro" aria-label="La pasión de comer">
+        <p className="section-kicker">50% TEX-MEX · 50% AJITATE</p>
+        <p>Con una propuesta creativa que fusiona la esencia del Tex-Mex con sabores de autor, AJITATE ha conquistado el paladar de cientos de ecuatorianos y extranjeros.</p>
+        <p>Una experiencia llena de sabor, creatividad y ese toque único que hace que cada visita sea diferente.</p>
+      </section>
       <RestaurantMenu onSelect={id=>openOrder(id)} onQuickAdd={id=>openOrder(id,true)} />
       <div id="nosotros"><StorySection /></div>
       <TestimonialsSection />

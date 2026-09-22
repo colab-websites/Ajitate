@@ -8,8 +8,8 @@ const VIDEO_URL =
   'https://res.cloudinary.com/dlsw7vg31/video/upload/v1786686488/ElevenLabs_video_seedance-2-0_replicate_the_V_2026-08-14T05_43_39_hobtha.mp4'
 
 function HeadlineWords() {
-  const line1 = 'SABOR QUE'.split('')
-  const line2 = 'AJITA'.split('')
+  const line1 = 'LA PASIÓN'.split('')
+  const line2 = 'DE COMER'.split('')
 
   return (
     <div
@@ -20,7 +20,7 @@ function HeadlineWords() {
         width: 'calc(900px * var(--hero-scale))',
       }}
     >
-      {/* Line 1: SABOR QUE */}
+      {/* Line 1 */}
       <div
         className="flex items-end"
         style={{ marginLeft: 'calc(24px * var(--hero-scale))', gap: 'calc(16px * var(--hero-scale))', whiteSpace: 'nowrap', width: 'max-content', flexShrink: 0 }}
@@ -37,7 +37,7 @@ function HeadlineWords() {
                 fontSize: 'calc(150px * var(--hero-scale))',
                 lineHeight: 0.84,
                 letterSpacing: 'calc(-3.97px * var(--hero-scale))',
-                color: char === ' ' ? 'transparent' : '#ffffff',                fontFamily: 'var(--font-display)',
+                color: char === ' ' ? 'transparent' : '#ffffff', fontFamily: 'var(--font-display)',
                 whiteSpace: 'nowrap',
                 width: 'max-content',
                 flexShrink: 0,
@@ -50,11 +50,11 @@ function HeadlineWords() {
         </span>
       </div>
 
-      {/* Line 2: AJITA */}
+      {/* Line 2 */}
       <div
         style={{
           marginTop: 'calc(31px * var(--hero-scale))',
-          marginLeft: 'calc(320px * var(--hero-scale))',
+          marginLeft: 'calc(190px * var(--hero-scale))',
           whiteSpace: 'nowrap',
           width: 'max-content',
           flexShrink: 0,
@@ -68,10 +68,10 @@ function HeadlineWords() {
             data-from-y="99.37"
             className="inline-block hero-title-text"
             style={{
-              fontSize: 'calc(200px * var(--hero-scale))',
+              fontSize: 'calc(150px * var(--hero-scale))',
               lineHeight: 0.84,
               letterSpacing: 'calc(-5.39px * var(--hero-scale))',
-              color: '#e53935',
+              color: '#ff3038',
               fontFamily: 'var(--font-display)',
               whiteSpace: 'nowrap',
               width: 'max-content',
@@ -79,7 +79,7 @@ function HeadlineWords() {
               textShadow: '0 6px 28px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5)',
             }}
           >
-            {char}
+            {char === ' ' ? '\u00A0' : char}
           </span>
         ))}
       </div>
@@ -109,7 +109,7 @@ function Badge() {
         <path
           d="M128,30 C155,28 180,40 198,58 C216,76 228,101 226,128 C224,155 212,180 194,198 C176,216 151,228 128,226 C105,224 80,212 62,194 C44,176 32,151 30,128 C28,105 40,80 58,62 C76,44 101,32 128,30Z"
           fill="none"
-          stroke="#e53935"
+          stroke="#ff3038"
           strokeWidth="1.4"
           opacity="0.55"
         />
@@ -117,7 +117,7 @@ function Badge() {
         <path
           d="M128,42 C150,41 170,50 185,65 C200,80 209,100 208,128 C207,156 198,176 183,191 C168,206 148,215 128,214 C108,213 88,204 73,189 C58,174 49,154 48,128 C47,102 56,82 71,67 C86,52 106,43 128,42Z"
           fill="none"
-          stroke="#e53935"
+          stroke="#ff3038"
           strokeWidth="1.1"
           opacity="0.4"
         />
@@ -130,12 +130,12 @@ function Badge() {
         </defs>
         <text fill="#ffffff" fontSize="12.5" letterSpacing="2.2" fontWeight="600">
           <textPath href="#badge-text-circle" startOffset="0%">
-            TEX-MEX EN CUENCA  •  FAMILIA Y SABOR  •  {' '}
+            50% TEX-MEX  •  50% AJITATE  •  {' '}
           </textPath>
         </text>
         {/* Dots */}
-        <circle cx="128" cy="30" r="2.6" fill="#e53935" />
-        <circle cx="128" cy="226" r="2.6" fill="#e53935" />
+        <circle cx="128" cy="30" r="2.6" fill="#ff3038" />
+        <circle cx="128" cy="226" r="2.6" fill="#ff3038" />
       </svg>
 
       {/* Center glyph */}
@@ -153,7 +153,7 @@ function Badge() {
 
 function IntroParagraph() {
   const text =
-    'Ajitate es el lugar perfecto en Cuenca donde la familia, las risas y el sabor tex-mex se encuentran. Fundado por Daniel Bojorque, te esperamos con hamburguesas, tacos, burritos, costillas y papas BBQ que te van a volar la cabeza.'
+    'AJITATE es un destino seguro para comer delicioso. Nuestra propuesta creativa fusiona la esencia del Tex-Mex con sabores de autor. Cada visita es una experiencia llena de sabor y creatividad.'
   const words = text.split(' ')
 
   return (
@@ -161,13 +161,13 @@ function IntroParagraph() {
       style={{
         position: 'absolute',
         left: 'calc(170.7px * var(--hero-scale))',
-        top: 'calc(602px * var(--hero-scale))',
+        top: 'calc(590px * var(--hero-scale))',
         fontSize: 'calc(18px * var(--hero-scale))',
         lineHeight: 1.4,
         color: 'white',
         textShadow: '0 2px 10px rgba(0,0,0,0.6)',
         width: 'max-content',
-        maxWidth: 'calc(459.25px * var(--hero-scale))',
+        maxWidth: 'calc(540px * var(--hero-scale))',
       }}
     >
       {words.map((word, i) => (
@@ -275,7 +275,7 @@ export function DesktopHero() {
             position: 'absolute',
             inset: 0,
             background:
-              'radial-gradient(480px 320px at 8% 92%, rgba(229,57,53,0.2), rgba(0,0,0,0) 70%)',
+              'radial-gradient(480px 320px at 8% 92%, rgba(255,48,56,0.2), rgba(0,0,0,0) 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -299,7 +299,7 @@ export function DesktopHero() {
           }}
         />
 
-      <h1 className="sr-only">SABOR QUE AJITA</h1>
+      <h1 className="sr-only">LA PASIÓN DE COMER</h1>
       <div
         ref={scopeRef}
         style={{
