@@ -1,5 +1,5 @@
 const STORY_IMAGE =
-  'https://res.cloudinary.com/dklycgquj/image/upload/v1787201076/historia_u5skcx.jpg'
+  `${import.meta.env.BASE_URL}images/ajitate-dining-room-2025-06-11.jpg`
 
 export function StorySection() {
   return (
@@ -7,7 +7,8 @@ export function StorySection() {
       <div className="story-content">
         <div className="story-layout">
           <figure className="story-photo">
-            <img src={STORY_IMAGE} alt="Imagen de la historia de Ajitate" loading="lazy" />
+            <img src={STORY_IMAGE} alt="Un comensal disfrutando de su comida en Ajitate" loading="lazy" />
+            <figcaption>Una mesa en Ajitate.</figcaption>
           </figure>
           <div className="story-copy">
             <p className="section-kicker">NUESTRA HISTORIA</p>

@@ -68,13 +68,6 @@ export function useHeroTimeline(
         const socials = q<HTMLElement>('[data-social-icon]')
         reveal(tl, socials, 1.1, { duration: 0.6, stagger: 0.12 })
 
-        // Idle spin of badge ring
-        tl.to(q('[data-badge-ring]'), {
-          rotate: 360,
-          duration: 26,
-          ease: 'none',
-          repeat: -1,
-        }, '>-0.2')
       })
 
       mm.add('(prefers-reduced-motion: reduce)', () => {
@@ -85,12 +78,6 @@ export function useHeroTimeline(
           opacity: 1,
         })
 
-        gsap.to(q('[data-badge-ring]'), {
-          rotate: 360,
-          duration: 26,
-          ease: 'none',
-          repeat: -1,
-        })
       })
 
       return () => {

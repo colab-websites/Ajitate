@@ -1,52 +1,13 @@
 import { SOCIALS } from '../data/socials'
-import { CartIcon, SearchIcon, InstagramIcon, FacebookIcon, YoutubeIcon, ArrowDown, CaretLeft, CaretRight } from '../icons/Icons'
-
-const LOGO_URL = 'https://res.cloudinary.com/dlsw7vg31/image/upload/v1786686042/AJITATE_LOGO_sin_slogan_f9iqsw.png'
-const VIDEO_URL =
-  'https://res.cloudinary.com/dlsw7vg31/video/upload/v1786686488/ElevenLabs_video_seedance-2-0_replicate_the_V_2026-08-14T05_43_39_hobtha.mp4'
-const ASSET_BASE =
-  'https://pub-36eefd528bbb4e28bdef0ce39a1018e0.r2.dev/Prompt/21-canger-burguer/public/assets'
-
-const NAV_ITEMS = ['Inicio', 'Menú', 'Especiales', 'Nosotros', 'Ubicación']
-
-const PRODUCTS = [
-  {
-    name: 'Burger Texana',
-    desc: 'Doble carne, queso ahumado, pepinillos y salsa BBQ',
-    price: '$12.9',
-    img: `${ASSET_BASE}/product-1.png`,
-    bg: 'rgba(255,48,56,0.15)',
-  },
-  {
-    name: 'Taco Loco',
-    desc: 'Carne asada, guacamol y pico de gallo',
-    price: '$8.5',
-    img: `${ASSET_BASE}/product-2.png`,
-    bg: 'rgba(255,48,56,0.1)',
-  },
-  {
-    name: 'Burrito Gigante',
-    desc: 'Arroz, frijoles, carne y queso derretido',
-    price: '$10.9',
-    img: `${ASSET_BASE}/product-3.png`,
-    bg: 'rgba(255,48,56,0.08)',
-  },
-]
+import { CartIcon, ArrowDown } from '../icons/Icons'
+import { HeroVideo } from './HeroVideo'
 
 export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
   return (
     <div id="inicio" className="original-mobile-hero relative min-h-screen overflow-x-hidden bg-black pb-12 text-white">
       {/* Video banner */}
       <div className="mx-4 mt-2 h-[46vh] min-h-[300px] rounded-[28px] overflow-hidden relative fade-up" style={{ animationDelay: '0.1s' }}>
-        <video
-          muted
-          playsInline
-          autoPlay
-          loop
-          preload="auto"
-          src={VIDEO_URL}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <HeroVideo className="absolute inset-0 w-full h-full object-cover" />
         <div
           className="absolute inset-0"
           style={{
@@ -58,11 +19,12 @@ export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
 
       {/* Headline */}
       <div className="px-4 mt-6 fade-up" style={{ animationDelay: '0.18s' }}>
+        <p className="hero-location">Tex-Mex con sabores de autor · Cuenca</p>
         <h1
-          className="grunge-text"
+          className="mobile-hero-title"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2.6rem, 15vw, 4.2rem)',
+            fontSize: 'clamp(3.8rem, 20vw, 6rem)',
             lineHeight: 0.86,
             color: '#ffffff',
             whiteSpace: 'nowrap',
@@ -78,7 +40,7 @@ export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
 
       {/* Paragraph */}
       <p className="px-4 mt-5 text-[15px] leading-relaxed text-white/90 fade-up" style={{ animationDelay: '0.22s' }}>
-        <strong>AJITATE</strong> es un destino seguro para comer delicioso. Nuestra propuesta creativa fusiona la esencia del Tex-Mex con sabores de autor. Cada visita es una experiencia llena de sabor y creatividad.
+        Hamburguesas, burritos y sabores muy nuestros. Ven con hambre. Quédate por el buen momento.
       </p>
 
       {/* Badge line */}
@@ -91,7 +53,7 @@ export function MobileHero({ onOrder }: { onOrder: (name?: string) => void }) {
       {/* CTA row */}
       <div className="px-4 mt-5 flex items-center gap-3 fade-up" style={{ animationDelay: '0.30s' }}>
         <a href="#menu" className="flex items-center justify-center flex-1 h-12 rounded-full bg-[#ff3038] text-white font-semibold text-base">
-          Ver Menú
+          Ver menú
         </a>
         <button aria-label="Información de pedidos" onClick={() => onOrder()} className="size-12 rounded-full bg-white flex items-center justify-center text-black shrink-0">
           <CartIcon className="w-5 h-5" />

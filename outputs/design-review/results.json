@@ -1,0 +1,42 @@
+{
+  "viewports": [
+    {
+      "viewport": "360x800",
+      "overflow": false,
+      "reduced_motion_video_paused": true
+    },
+    {
+      "viewport": "390x844",
+      "overflow": false,
+      "reduced_motion_video_paused": true
+    },
+    {
+      "viewport": "768x1024",
+      "overflow": false,
+      "reduced_motion_video_paused": true
+    },
+    {
+      "viewport": "1024x768",
+      "overflow": false,
+      "reduced_motion_video_paused": true
+    },
+    {
+      "viewport": "1440x1000",
+      "overflow": false,
+      "reduced_motion_video_paused": true
+    }
+  ],
+  "broken_images": [],
+  "page_errors": [],
+  "checks": [
+    "mobile nav Escape and focus return",
+    "accent-insensitive search",
+    "empty search recovery",
+    "quick-add toast",
+    "cart increment and removal",
+    "combo subtotal $10.98",
+    "pickup inquiry summary",
+    "dialog Escape"
+  ],
+  "real_orders_sent": false
+}

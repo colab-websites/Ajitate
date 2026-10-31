@@ -1,10 +1,11 @@
 import { MenuPhoto } from './MenuPhoto'
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { MENU, lineKey, money, subtotal, unitPrice } from '../data/menu'
 import { formatPhone } from '../data/phone'
-import { DeliveryPin } from './DeliveryPin'
 import type { Pin } from './DeliveryPin'
 import type { CartLine } from '../data/menu'
+
+const DeliveryPin = lazy(() => import('./DeliveryPin').then(module => ({ default: module.DeliveryPin })))
 
 export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:boolean}}) {
   const dialog=useRef<HTMLDialogElement>(null)
@@ -67,6 +68,7 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
   const copy=async()=>{try {await navigator.clipboard.writeText(summary);setCopied(true)} catch {setNotice('No se pudo copiar automáticamente. Selecciona el resumen para copiarlo.')}}
   const heading={browse:'¿QUÉ SE TE ANTOJA?',item:item.name,cart:'TU PEDIDO',details:'LOS ÚLTIMOS DETALLES',summary:'TODO LISTO PARA CONSULTAR'}[step]
   return <>
+    {notice&&!dialog.current?.open&&<p className="order-toast" role="status">{notice}</p>}
     {count>0&&<button className="cart-floating liquid-panel" onClick={()=>{setStep('cart');dialog.current?.showModal()}}>Ver carrito <b>{count}</b> · {money(total)}</button>}
     <dialog ref={dialog} className="order-drawer" aria-labelledby="drawer-title" onClick={e=>{if(e.target===e.currentTarget)close()}}>
       <div className="drawer-shell">
@@ -94,7 +96,7 @@ export function OrderDrawer({request}:{request:{serial:number;id:string;quick?:b
             <label className="form-label">Teléfono<input className="order-input" required type="tel" inputMode="tel" minLength={10} maxLength={20} autoComplete="tel" value={phone} placeholder="Tu número de celular" onChange={e=>setPhone(e.target.value)} onBlur={()=>setPhone(formatPhone(phone))}/></label>
             <fieldset><legend>¿Cómo lo prefieres?</legend><label className="option-choice"><input type="radio" name="delivery" checked={method==='delivery'} onChange={()=>setMethod('delivery')}/>A domicilio</label><label className="option-choice"><input type="radio" name="delivery" checked={method==='pickup'} onChange={()=>setMethod('pickup')}/>Retiro en el local · por confirmar</label></fieldset>
             {method==='delivery'&&<label className="form-label">Dirección y referencia<textarea className="order-input" required maxLength={400} autoComplete="street-address" value={address} onChange={e=>setAddress(e.target.value)}/></label>}
-            {method==='delivery'&&<DeliveryPin pin={pin} onChange={setPin}/>}
+            {method==='delivery'&&<Suspense fallback={<p className="order-hint" role="status">Cargando mapa opcional…</p>}><DeliveryPin pin={pin} onChange={setPin}/></Suspense>}
             <fieldset><legend>¿Necesitas algo más? · Sin recargo</legend><label className="option-choice"><input type="checkbox" checked={napkins} onChange={e=>setNapkins(e.target.checked)}/>Servilletas</label>{hasBeverage&&<label className="option-choice"><input type="checkbox" checked={straws} onChange={e=>setStraws(e.target.checked)}/>Sorbetes</label>}</fieldset>
             <label className="form-label">Notas para el restaurante<textarea className="order-input" maxLength={600} placeholder="Preferencias, alergias o consultas…" value={notes} onChange={e=>setNotes(e.target.value)}/></label><p className="order-hint">Las modificaciones y solicitudes especiales están sujetas a confirmación.</p><button className="order-primary" type="submit">Revisar pedido · {money(total)}</button>
           </form>}

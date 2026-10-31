@@ -1,11 +1,9 @@
+import { HeroVideo } from './HeroVideo'
 import { SOCIALS } from '../data/socials'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useStageScale } from '../hooks/useStageScale'
 import { useHeroTimeline } from '../hooks/useHeroTimeline'
 import { InstagramIcon, FacebookIcon, YoutubeIcon, BurgerGlyph } from '../icons/Icons'
-
-const VIDEO_URL =
-  'https://res.cloudinary.com/dlsw7vg31/video/upload/v1786686488/ElevenLabs_video_seedance-2-0_replicate_the_V_2026-08-14T05_43_39_hobtha.mp4'
 
 function HeadlineWords() {
   const line1 = 'LA PASIÓN'.split('')
@@ -93,9 +91,9 @@ function Badge() {
       style={{
         position: 'absolute',
         left: 'calc(0.52px * var(--hero-scale))',
-        top: 'calc(328.52px * var(--hero-scale))',
-        width: 'calc(256.48px * var(--hero-scale))',
-        height: 'calc(256.48px * var(--hero-scale))',
+        top: 'calc(354px * var(--hero-scale))',
+        width: 'calc(190px * var(--hero-scale))',
+        height: 'calc(190px * var(--hero-scale))',
       }}
     >
       <svg
@@ -223,30 +221,14 @@ function SocialRail() {
 
 export function DesktopHero() {
   const scopeRef = useRef<HTMLDivElement>(null)
-  const [ready, setReady] = useState(false)
-  const firedRef = useRef(false)
 
   const { containerRef, scale } = useStageScale()
-  useHeroTimeline(scopeRef, ready)
-
-  const handleVideoReady = () => {
-    if (firedRef.current) return
-    firedRef.current = true
-    setReady(true)
-  }
+  useHeroTimeline(scopeRef, true)
 
   return (
     <div id="inicio" ref={containerRef} className="original-desktop-hero relative w-full h-screen overflow-hidden" style={{ background: '#000', '--hero-scale': scale } as React.CSSProperties}>
         {/* Background video */}
-        <video
-          muted
-          playsInline
-          autoPlay
-          loop
-          preload="auto"
-          src={VIDEO_URL}
-          onCanPlay={handleVideoReady}
-          onLoadedData={handleVideoReady}
+        <HeroVideo
           style={{
             position: 'absolute',
             left: '24%',
@@ -319,6 +301,11 @@ export function DesktopHero() {
 
         {/* Paragraph */}
         <IntroParagraph />
+
+        <div className="desktop-hero-actions">
+          <a className="hero-primary" href="#menu">Ver menú <span aria-hidden="true">↗</span></a>
+          <a className="hero-secondary" href="#ubicacion">Visítanos en Cuenca</a>
+        </div>
 
         {/* Social rail */}
         <SocialRail />
