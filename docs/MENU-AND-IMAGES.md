@@ -10,7 +10,7 @@ Transcribed from the four screenshots supplied by the user on September 5, 2026:
 
 47 separately priced options, including taco fillings and rib portion sizes. Source phone: 0983047406 (+593983047406). Source Instagram: @ajitate.ec. Prices are stored in integer USD cents in src/data/menu.ts. Burger and Tex-Mex combo: +$1.99 per unit for chilli nachos or papas plus a beverage. Beverage brand/size, delivery fee, pickup arrangements, stock and payment method need restaurant confirmation. Edición Especial is displayed under Especiales.
 
-The current checkout is an order-preparation flow: browse, configure, cart, customer/delivery details, review, copy and call. It does not accept payment, submit an order or claim restaurant confirmation. WhatsApp support for the source phone has not been confirmed, so the fallback is a copyable summary and telephone link. Test details were dummy local data and were not transmitted to the restaurant. The cart is retained while the page stays open; a page refresh clears it. No customer details are saved to persistent storage.
+The checkout prepares an itemized pickup or delivery request with a payment preference, an optional confirmed pin, and a WhatsApp draft. The customer chooses when to send it. The cart survives refreshes in the same tab. Contact and address details stay in page memory. See [Checkout Ajitate](Checkout-Ajitate.md) for merchant activation and fulfillment details.
 
 ## Generated images
 
@@ -30,14 +30,14 @@ Subjects:
 
 The original hero video is unchanged.
 
-## Validation
+## September 5 validation
 
 - Menu identity/count, integer prices, mixed combo subtotals, plain/variant line separation and unsupported combo handling tested with Node's test runner.
 - Browser: two Solo Queso? combos with papas correctly total $10.98. Customer details carry into the copyable summary without transmission. Quantity/removal and empty-cart recovery tested.
 - Mobile drawer/close-button bounds checked; all five review cards measured the same width and 390px height.
 - Production build checked before local save.
 
-## Next launch inputs
+## September 5 launch inputs
 
 Delivery coverage/fee, payment methods and the restaurant's preferred order channel still need confirmation. Four review sources remain unverified.
 

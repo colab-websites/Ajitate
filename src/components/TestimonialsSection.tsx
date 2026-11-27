@@ -1,18 +1,70 @@
 import { useRef, useState } from 'react'
-
 import { REVIEWS } from '../data/reviews'
-const SOURCE='https://maps.app.goo.gl/FTVdfzcjXtNxwSw76'
+import './testimonials.css'
+
+const GOOGLE_MAPS = 'https://maps.app.goo.gl/FTVdfzcjXtNxwSw76'
+
 export function TestimonialsSection() {
- const [position,setPosition]=useState(REVIEWS.length)
- const active=((position%REVIEWS.length)+REVIEWS.length)%REVIEWS.length
- const touch=useRef({x:0,y:0})
- const move=(delta:number)=>setPosition(i=>i+delta)
- return <section id="resenas" className="reviews-section" aria-label="Reseñas de Google" onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}if(e.key==='ArrowRight'){e.preventDefault();move(1)}}} onTouchStart={e=>{touch.current={x:e.touches[0].clientX,y:e.touches[0].clientY}}} onTouchEnd={e=>{const dx=e.changedTouches[0].clientX-touch.current.x,dy=e.changedTouches[0].clientY-touch.current.y;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)move(dx>0?-1:1)}}>
-   <div className="reviews-backdrop" aria-hidden="true">REVIEWS</div>
-   <div className="reviews-heading"><p className="section-kicker">EXPERIENCIAS EN GOOGLE</p><h2>LA CALLE <span>HABLA</span></h2><a className="glass-action" href={SOURCE} target="_blank" rel="noreferrer">4,6 ★ · 67 reseñas en Google ↗</a><p className="reviews-date">Consultado en septiembre de 2026</p></div>
-   <div className="review-deck">
-    {[-2,-1,0,1,2].map(offset=>{const absolute=position+offset;const review=REVIEWS[((absolute%REVIEWS.length)+REVIEWS.length)%REVIEWS.length];return <article key={absolute} aria-hidden={offset!==0} className={`review-position ${offset===0?'is-active':''}`} style={{transform:`translateX(calc(-50% + ${offset} * var(--review-gap))) translateY(${Math.abs(offset)*32}px) scale(${offset===0?1:.91})`,opacity:Math.abs(offset)>1?0:1,zIndex:offset===0?3:1,filter:offset===0?'none':'blur(1.5px) brightness(.58)'}}><div className="review-glass-card liquid-panel"><div className="review-stars" aria-label={`${review.stars} de 5 estrellas`}>{'★'.repeat(review.stars)}<span className="review-empty-stars">{'★'.repeat(5-review.stars)}</span></div><blockquote>“{review.text}”</blockquote><div className="review-author"><span aria-hidden="true">{review.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</span><div><strong>{review.name}</strong><small>Reseña de Google</small></div></div></div></article>})}
-   </div>
-   <div className="review-controls"><button aria-label="Reseña anterior" onClick={()=>move(-1)}>←</button>{REVIEWS.map((r,i)=><button key={r.name} className="review-dot" aria-label={`Ver reseña ${i+1}`} aria-pressed={i===active} onClick={()=>{let delta=i-active;if(delta>REVIEWS.length/2)delta-=REVIEWS.length;if(delta< -REVIEWS.length/2)delta+=REVIEWS.length;move(delta)}}/>)}<button aria-label="Siguiente reseña" onClick={()=>move(1)}>→</button></div><p className="review-counter" aria-live="polite">{active+1} / {REVIEWS.length}</p>
- </section>
+  const [index, setIndex] = useState(0)
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
+  const review = REVIEWS[index]
+
+  function move(delta: number) {
+    setIndex(current => (current + delta + REVIEWS.length) % REVIEWS.length)
+  }
+
+  return (
+    <section id="resenas" className="aj-reviews" aria-labelledby="reviews-title">
+      <div className="aj-reviews-inner">
+        <header className="aj-reviews-heading">
+          <p className="section-kicker">Reseñas de Google</p>
+          <h2 id="reviews-title">La calle <span>habla.</span></h2>
+          <a href={GOOGLE_MAPS} target="_blank" rel="noreferrer">
+            <strong aria-label="4,6 de 5 estrellas">4,6 <span aria-hidden="true">★</span></strong>
+            <span>67 reseñas en Google <span aria-hidden="true">↗</span></span>
+          </a>
+          <p className="aj-reviews-date">Consultado en septiembre de 2026</p>
+        </header>
+        <div className="aj-review-reader" role="group" aria-label="Reseñas de comensales" aria-roledescription="carrusel"
+          onKeyDown={event => {
+            if (event.target instanceof HTMLSelectElement || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+              event.preventDefault()
+              move(event.key === 'ArrowLeft' ? -1 : 1)
+            }
+          }}
+        >
+          <div className="aj-review-navigation">
+            <label className="aj-review-picker">
+              <span className="sr-only">Elegir reseña</span>
+              <select value={index} onChange={event => setIndex(Number(event.target.value))}>
+                {REVIEWS.map((item, i) => <option key={item.name} value={i}>Reseña {i + 1} de {REVIEWS.length}</option>)}
+              </select>
+            </label>
+            <div className="aj-review-buttons">
+              <button type="button" aria-label="Reseña anterior" onClick={() => move(-1)}>←</button>
+              <button type="button" aria-label="Siguiente reseña" onClick={() => move(1)}>→</button>
+            </div>
+          </div>
+          <figure className="aj-review-quote" aria-live="polite" aria-atomic="true"
+            onTouchStart={event => {
+              touchStart.current = event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null
+            }}
+            onTouchCancel={() => { touchStart.current = null }}
+            onTouchEnd={event => {
+              const start = touchStart.current
+              touchStart.current = null
+              if (!start || event.touches.length) return
+              const dx = event.changedTouches[0].clientX - start.x
+              const dy = event.changedTouches[0].clientY - start.y
+              if (Math.abs(dx) > 55 && Math.abs(dx) > 1.5 * Math.abs(dy)) move(dx < 0 ? 1 : -1)
+            }}
+          >
+            <blockquote>“{review.text}”</blockquote>
+            <figcaption><strong>{review.name}</strong><span className="aj-review-stars" role="img" aria-label={`${review.stars} de 5 estrellas`}>{'★'.repeat(review.stars)}{'☆'.repeat(5 - review.stars)}</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+  )
 }

@@ -1,68 +1,45 @@
-import { SOCIALS } from './data/socials'
+import { useEffect, useState } from 'react'
 import { BrandLogo } from './components/BrandLogo'
-import { useState } from 'react'
-import { useIsDesktop } from './hooks/useIsDesktop'
-import { DesktopHero } from './components/DesktopHero'
+import { FeaturedHero } from './components/FeaturedHero'
 import { DesktopNavbar } from './components/DesktopNavbar'
-import { MobileHero } from './components/MobileHero'
 import { RestaurantMenu } from './components/RestaurantMenu'
 import { OrderDrawer } from './components/OrderDrawer'
 import { StorySection } from './components/StorySection'
 import { MomentsGallery } from './components/MomentsGallery'
 import { TestimonialsSection } from './components/TestimonialsSection'
+import { VisitSection } from './components/VisitSection'
+import './site.css'
 
 export default function App() {
-  const isDesktop = useIsDesktop()
-  const [request,setRequest]=useState({serial:0,id:'',quick:false})
-  const openOrder=(id='',quick=false)=>setRequest(r=>({serial:r.serial+1,id,quick}))
+  const [request, setRequest] = useState({ serial: 0, id: '', quick: false })
+  const openOrder = (id = '', quick = false) => setRequest(previous => ({ serial: previous.serial + 1, id, quick }))
+
+  useEffect(() => {
+    const openFromLink = () => {
+      if (window.location.hash === '#pedido') {
+        setRequest(previous => ({ serial: previous.serial + 1, id: '', quick: false }))
+      }
+    }
+    openFromLink()
+    window.addEventListener('hashchange', openFromLink)
+    return () => window.removeEventListener('hashchange', openFromLink)
+  }, [])
   return <>
     <a className="skip-link" href="#menu">Saltar al menú</a>
     <DesktopNavbar onOrder={() => openOrder()} />
     <main>
-      {isDesktop ? <DesktopHero /> : <MobileHero onOrder={openOrder} />}
-      <section id="esencia" className="home-intro" aria-label="La pasión de comer">
-        <div className="home-intro-card">
-          <figure className="home-intro-visual">
-            <img src={`${import.meta.env.BASE_URL}images/ajitate-instagram-spread-2026-08-24.jpg`} alt="Platos de Ajitate servidos en el restaurante" loading="lazy" />
-            <div className="home-intro-ratio" aria-label="50% Tex-Mex, 50% Ajitate">
-              <span><strong>50%</strong><small>TEX-MEX</small></span>
-              <i aria-hidden="true">+</i>
-              <span><strong>50%</strong><small>AJITATE</small></span>
-            </div>
-          </figure>
-          <div className="home-intro-copy">
-            <p className="section-kicker">NUESTRA ESENCIA</p>
-            <h2>UNA MEZCLA<br /><span>MUY NUESTRA.</span></h2>
-            <div className="home-intro-rule" aria-hidden="true" />
-            <p>Con una propuesta creativa que fusiona la esencia del Tex-Mex con sabores de autor, AJITATE ha conquistado el paladar de cientos de ecuatorianos y extranjeros.</p>
-            <p>Una experiencia llena de sabor, creatividad y ese toque único que hace que cada visita sea diferente.</p>
-            <a href="#menu" className="home-intro-link">DESCUBRE EL MENÚ <span aria-hidden="true">↗</span></a>
-          </div>
-        </div>
-      </section>
-      <RestaurantMenu onSelect={id=>openOrder(id)} onQuickAdd={id=>openOrder(id,true)} />
+      <FeaturedHero onSelect={openOrder} />
+      <RestaurantMenu onSelect={openOrder} onQuickAdd={id => openOrder(id, true)} />
       <div id="nosotros"><StorySection /></div>
       <MomentsGallery />
       <TestimonialsSection />
-      <section id="ubicacion" className="contact-section">
-        <div className="contact-glow" aria-hidden="true" />
-        <div className="contact-inner">
-          <p className="section-kicker">NOS VEMOS EN CUENCA</p>
-          <h2>TE GUARDAMOS<br /><span>UN LUGAR</span></h2>
-          <p className="contact-intro">La buena comida sabe mejor en buena compañía.</p>
-          <div className="contact-grid">
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">↗</span><h3>Ubicación</h3><p>Av. Don Bosco, Cuenca<br />Frente a Sistemas de Escapes Falconi</p><a className="contact-phone" href="https://maps.app.goo.gl/FTVdfzcjXtNxwSw76" target="_blank" rel="noreferrer">Cómo llegar ↗</a></article>
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">◷</span><h3>Horarios</h3><p>Martes a sábado<br />12:00–15:00 · 18:00–22:00</p></article>
-            <article className="liquid-panel"><span className="contact-symbol" aria-hidden="true">♨</span><h3>Pedidos</h3><p>Tu próximo antojo empieza aquí.</p><button className="glass-action" onClick={() => openOrder()}>Realiza tu pedido aquí →</button><a className="contact-call" href="tel:+593983047406"><span aria-hidden="true">☎</span><span><small>¿Prefieres llamar?</small><strong>(098) 304-7406</strong></span><span aria-hidden="true">↗</span></a></article>
-          </div>
-          <div id="redes" className="social-placeholder liquid-panel">
-            <div><p className="section-kicker">SIGAMOS EN CONTACTO</p><h3>Más sabor, todos los días.</h3><a className="contact-phone" href="https://www.instagram.com/ajitate.ec/" target="_blank" rel="noreferrer">Instagram · @ajitate.ec ↗</a></div>
-            <div className="social-preview">{SOCIALS.map(({name,href,Icon})=><a key={name} href={href} target="_blank" rel="noreferrer" aria-label={name}><Icon/></a>)}</div>
-          </div>
-        </div>
-      </section>
+      <VisitSection onOrder={() => openOrder()} />
     </main>
-    <footer className="original-footer expanded-footer"><a className="footer-logo-link" href="#inicio" aria-label="Ajitate, inicio"><BrandLogo className="footer-brand"/></a><p>TEX-MEX EN CUENCA · FAMILIA Y SABOR</p><div className="footer-links"><a href="#menu">Menú</a><a href="#especiales">Especiales</a><a href="#nosotros">Nuestra historia</a><a href="#ubicacion">Visítanos</a></div><div className="footer-bottom"><span>Hecho para compartir una buena mesa.</span><a href="#inicio" aria-label="Volver al inicio">Volver arriba ↑</a></div></footer>
+    <footer className="site-footer"><div className="footer-inner">
+      <a className="footer-home" href="#inicio" aria-label="Ajitate, inicio"><BrandLogo /></a>
+      <p>Ajitate Minibistro <span>·</span> Cuenca, Ecuador</p>
+      <a className="footer-up" href="#inicio">Volver arriba <span aria-hidden="true">↑</span></a>
+    </div></footer>
     <OrderDrawer request={request} />
   </>
 }

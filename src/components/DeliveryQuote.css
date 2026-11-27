@@ -1,0 +1,12 @@
+.delivery-quote-field {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #473b3d;
+  border-radius: 12px;
+  background: #201a1b;
+}
+
+.delivery-quote-field h3 { margin: 0; color: #fff4ef; font-size: 16px; }
+.delivery-quote-field .glass-action { min-height: 44px; margin-block: 9px 0; }
+.delivery-quote-field .glass-action:disabled { opacity: .6; cursor: default; }
+.delivery-quote-field [role="status"] p { margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: #eee3dc; }

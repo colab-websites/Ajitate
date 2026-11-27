@@ -1,26 +1,28 @@
-const STORY_IMAGE =
-  `${import.meta.env.BASE_URL}images/ajitate-dining-room-2025-06-11.jpg`
+import './restaurant-editorial.css'
 
 export function StorySection() {
   return (
-    <section className="story-section">
-      <div className="story-content">
-        <div className="story-layout">
-          <figure className="story-photo">
-            <img src={STORY_IMAGE} alt="Un comensal disfrutando de su comida en Ajitate" loading="lazy" />
-            <figcaption>Una mesa en Ajitate.</figcaption>
-          </figure>
-          <div className="story-copy">
-            <p className="section-kicker">NUESTRA HISTORIA</p>
-            <h2>TODO EMPEZÓ <span>DESDE CERO.</span></h2>
-            <p>Desde 2019, Daniel Bojorque comenzó vendiendo burritos y hamburguesas a domicilio desde su propia casa, impulsado por el deseo de crear algo propio y convertir una idea en realidad.</p>
-            <p>Años después, mientras estudiaba música, dio el siguiente paso junto a su papá, Fredy Bojorque: construyeron un pequeño kiosco que se convertiría en el punto de partida para el crecimiento de la marca.</p>
-            <p>En 2024, Daniel fundó oficialmente AJITATE. Empezó una nueva etapa con una identidad renovada, una propuesta más definida y un menú mucho más variado.</p>
-            <p>Lo que comenzó desde una casa, con esfuerzo, familia y ganas de salir adelante, se convirtió en una marca que hoy busca llevar una experiencia diferente de sabor a cada persona que nos visita.</p>
-            <p className="story-signoff">De cero, con sabor y con propósito. Esta es la historia de AJITATE.</p>
-            <blockquote>“Todo es por gracia y gloria de Dios”</blockquote>
-          </div>
-        </div>
+    <section className="aj-story" aria-labelledby="aj-story-title">
+      <div className="aj-story-inner">
+        <header className="aj-story-intro">
+          <p className="section-kicker">Nuestra historia</p>
+          <h2 id="aj-story-title">Todo empezó<br /><span>en casa.</span></h2>
+          <blockquote>“Todo es por gracia y gloria de Dios”</blockquote>
+        </header>
+        <ol className="aj-story-chapters" aria-label="La historia de Ajitate">
+          <li>
+            <span className="aj-story-chapter-date">2019</span>
+            <div><h3>Los primeros pedidos</h3><p>Daniel Bojorque empezó a vender burritos y hamburguesas a domicilio desde su casa.</p></div>
+          </li>
+          <li>
+            <span className="aj-story-chapter-date">El kiosco</span>
+            <div><h3>Un proyecto de familia</h3><p>Mientras estudiaba música, Daniel construyó un pequeño kiosco junto a su papá, Fredy Bojorque. Allí empezó a crecer el negocio.</p></div>
+          </li>
+          <li>
+            <span className="aj-story-chapter-date">2024</span>
+            <div><h3>Nace Ajitate</h3><p>Daniel fundó oficialmente Ajitate. Con la nueva identidad llegó una carta más amplia, con Tex-Mex y sabores de autor.</p></div>
+          </li>
+        </ol>
       </div>
     </section>
   )
